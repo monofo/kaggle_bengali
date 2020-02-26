@@ -1,0 +1,36 @@
+work_dir: 'se_resnext101_32x4d_2020_1_26'
+
+data:
+  image_size: 128
+  params:
+    idx: 0
+    fold_csv: 'train_with_fold_seed12.csv'
+
+
+model:
+  version:  'se_resnext101_32x4d'
+
+train:
+  batch_size: 128
+  num_epochs: 80
+  accumulation_size: 256
+  mixup: No
+  early_stop_patience: 7
+  
+loss:
+  name: "CrossEntropy"
+
+optimizer:
+  name: 'RAdam'
+  params:
+    lr: 0.03
+    opt_eps: 1.0e-8
+    weight_decay: 1.0e-4
+  look_ahead:
+    apply: Yes
+
+scheduler:
+  name: 'plateau'
+
+num_workers: 2
+device: 'cuda'

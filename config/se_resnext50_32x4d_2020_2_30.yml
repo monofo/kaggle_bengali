@@ -1,0 +1,57 @@
+work_dir: 'se_resnext50_32x4d_2020_2_30/'  
+data:   
+  image_size: 128   
+  params:     
+  idx: 0     
+  fold_csv: 'train_with_fold_seed12.csv'
+  
+  # Pretrained  
+model:   
+  version:  'se_resnext50_32x4d'   
+  pretrained: 'imagenet'  
+  
+# auto aug or aug mix  
+
+transforms:     
+  affine: No     
+  crop: No     
+  threshold: 0.     
+  sigma: 0.     
+  autoaugment: Yes     
+  blur_ratio: 0.     
+  noise_ratio: 0.     
+  cutout_ratio: 0.     
+  grid_distortion_ratio: 0.     
+  random_brightness_ratio: 0.     
+  piece_affine_ratio: 0.     
+  ssr_ratio: 0.     
+  grid_mask_ratio: 0.     
+  augmix_ratio: 0.      
+  
+train:   
+  batch_size: 128   
+  num_epochs: 150   
+  mixup: 0.4 
+  cutmix: 0.6   
+  grid_mask: 0.   
+  augmix: 0.   
+  accumulation_size: 0   
+  resume: No    
+  
+loss:   
+  name: "CrossEntropy"  
+  
+optimizer:     
+  name: 'Adam'     
+  params:         
+    lr: 1.0e-4         
+    opt_eps: 1.0e-8         
+    weight_decay: 1.0e-4     
+    lookahead:         
+      apply: No
+
+scheduler:   
+  name: 'plateau'  
+  
+num_workers: 2 
+device: 'cuda' 

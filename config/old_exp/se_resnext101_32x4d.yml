@@ -1,0 +1,28 @@
+work_dir: 'se_resnext101_32x4d'
+
+data:
+    image_size: 128
+
+
+model:
+  pretrained: 'imagenet'
+  version:  'se_resnext101_32x4d'
+
+train:
+  batch_size: 128
+  num_epochs: 15
+  early_stop_patience: 3
+
+loss:
+  name: "CrossEntropy"
+
+optimizer:
+  name: 'Adam'
+  params:
+    lr: 1.0e-3
+
+scheduler:
+  name: 'plateau'
+
+num_workers: 2
+device: 'cuda'

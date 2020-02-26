@@ -1,0 +1,36 @@
+work_dir: 'se_resnext101_32x4d_2020_1_28'
+# validation recall: 0.95258
+
+data:
+  image_size: 128
+  params:
+    idx: 0
+    fold_csv: 'train_with_fold_seed12.csv'
+
+
+model:
+  version:  'se_resnext101_32x4d'
+
+train:
+  batch_size: 128
+  num_epochs: 89
+  mixup: No
+  early_stop_patience: 7
+  
+loss:
+  name: "CrossEntropy"
+
+optimizer:
+  name: 'SGD'
+  params:
+    lr: 0.1
+    momentum: 0.9
+    weight_decay: 1.0e-4
+  look_ahead:
+    apply: Yes
+
+scheduler:
+  name: 'multi_step'
+
+num_workers: 2
+device: 'cuda'

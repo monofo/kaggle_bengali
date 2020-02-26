@@ -27,7 +27,7 @@ from utils.metrics import macro_recall_multi
 from utils.utils import (EarlyStopping, cutmix, cutmix_criterion, get_logger,
                          mixup, mixup_criterion, ohem_loss, rand_bbox)
 
-os.environ["CUDA_VISIBLE_DEVICES"]='1'
+os.environ["CUDA_VISIBLE_DEVICES"]='2'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def do_train(model, data_loader, criterion, optimizer, device, config, grad_acc=1):

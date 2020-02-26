@@ -103,8 +103,8 @@ class Transform:
         # --- Train/Test common preprocessing ---
         if self.crop:
             x = crop_char_image(x, threshold=self.threshold)
-        if self.size is not None:
-            x = apply_aug(A.Resize(128, 128, always_apply=True), x)
+        if self.size > 0:
+            x = apply_aug(A.Resize(self.size, self.size, always_apply=True), x)
         if self.sigma > 0.:
             x = add_gaussian_noise(x, sigma=self.sigma)
 

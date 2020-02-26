@@ -138,7 +138,7 @@ def normalize(image):
 
 def apply_op(image, op, severity):
     #   image = np.clip(image, 0, 255)
-    pil_img = Image.fromarray(image)  # Convert to PIL.Image
+    pil_img = Image.fromarray(image).convert("RGB")  # Convert to PIL.Image
     pil_img = op(pil_img, severity)
     return np.asarray(pil_img)
 

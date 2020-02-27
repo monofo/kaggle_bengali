@@ -1,6 +1,6 @@
-work_dir: 'se_resnext50_32x4d_2020_3_01/'  
+work_dir: 'se_resnext50_32x4d_2020_3_02/'  
 data:   
-  image_size: -1
+  image_size: 128
   params:
     idx: 0
     fold_csv: 'train_with_fold_seed12.csv'
@@ -13,7 +13,7 @@ model:
 # auto aug or aug mix  
 transforms:     
   affine: No     
-  crop: No     
+  crop: Yes 
   threshold: 0.     
   sigma: 0.     
   autoaugment: Yes     
@@ -28,13 +28,13 @@ transforms:
   augmix_ratio: 0.      
   
 train:   
-  batch_size: 64   
+  batch_size: 128
   num_epochs: 150   
   mixup: 0.
   cutmix: 1.   
   grid_mask: 0.
   augmix: 0.   
-  accumulation_size: 256   
+  accumulation_size: 0 
   resume: No    
   
 loss:   

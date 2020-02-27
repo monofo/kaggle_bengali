@@ -101,8 +101,6 @@ class Transform:
             x = affine_image(x)
 
         # --- Train/Test common preprocessing ---
-        if self.crop:
-            x = crop_char_image(x, threshold=self.threshold)
         if self.size > 0:
             x = apply_aug(A.Resize(self.size, self.size, always_apply=True), x)
         if self.sigma > 0.:

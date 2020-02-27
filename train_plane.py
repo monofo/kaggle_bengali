@@ -27,7 +27,7 @@ from utils.metrics import macro_recall_multi
 from utils.utils import (EarlyStopping, cutmix, cutmix_criterion, get_logger,
                          mixup, mixup_criterion, ohem_loss, rand_bbox)
 
-os.environ["CUDA_VISIBLE_DEVICES"]='2'
+os.environ["CUDA_VISIBLE_DEVICES"]='0'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def do_train(model, data_loader, criterion, optimizer, device, config, grad_acc=1):
@@ -143,6 +143,7 @@ def run(config_file):
             fold_csv=config.data.params.fold_csv,
             transforms=all_transforms[phase],
             # debug=config.debug
+            crop = config.transforms.crop
         )
         for phase in ['train', 'valid']
     }

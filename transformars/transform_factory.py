@@ -13,12 +13,13 @@ from skimage.transform import AffineTransform, warp
 
 from transformars.augmix import RandomAugMix
 from transformars.grid_mask import GridMask
-from transformars.autoaugment import ImageNetPolicy
+from transformars.autoaugment import ImageNetPolicy, SVHNPolicy
 
 HEIGHT = 137
 WIDTH = 236
 
-policy = ImageNetPolicy()
+# policy = ImageNetPolicy()
+policy = SVHNPolicy()
 
 def affine_image(img):
 
@@ -67,7 +68,7 @@ def apply_aug(aug, image):
 
 class Transform:
     def __init__(self, affine=False, crop=False, size=224,
-                 autoaugment=False, normalize=True, train=True, threshold=40.,
+                 autoaugment_ratio=0., normalize=True, train=True, threshold=40.,
                  sigma=-1., blur_ratio=0., noise_ratio=0., cutout_ratio=0.,
                  grid_distortion_ratio=0., elastic_distortion_ratio=0., random_brightness_ratio=0.,
                  piece_affine_ratio=0., ssr_ratio=0., grid_mask_ratio=0., augmix_ratio=0.):
@@ -78,7 +79,7 @@ class Transform:
         self.train = train
         self.threshold = threshold / 255.
         self.sigma = sigma / 255.
-        self.autoaugment = autoaugment
+        self.autoaugment_ratio = autoaugment_ratio
 
         self.blur_ratio = blur_ratio
         self.noise_ratio = noise_ratio
@@ -105,15 +106,12 @@ class Transform:
             x = apply_aug(A.Resize(self.size, self.size, always_apply=True), x)
         if self.sigma > 0.:
             x = add_gaussian_noise(x, sigma=self.sigma)
-
-        if self.autoaugment:
+        
+        
+        if _evaluate_ratio(self.autoaugment_ratio):
             x = policy(Image.fromarray(x).convert("RGB"))
             x = np.array(x)
-
-        # albumentations...
-        x = x.astype(np.float32)
-
-        if _evaluate_ratio(self.augmix_ratio):
+        elif _evaluate_ratio(self.augmix_ratio):
             r = np.random.uniform()
             if r < 0.30:
                 x = apply_aug(RandomAugMix(severity=1, width=1, p=1.), x)

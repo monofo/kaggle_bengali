@@ -119,7 +119,7 @@ def run(config_file):
     all_transforms['train'] = Transform(
             size=config.data.image_size,
             affine=config.transforms.affine,
-            autoaugment=config.transforms.autoaugment,
+            autoaugment_ratio=config.transforms.autoaugment_ratio,
             threshold=config.transforms.threshold,
             sigma=config.transforms.sigma,
             blur_ratio=config.transforms.blur_ratio,
@@ -143,12 +143,14 @@ def run(config_file):
             fold_csv=config.data.params.fold_csv,
             transforms=all_transforms[phase],
             # debug=config.debug
-            crop = config.transforms.crop
+            crop=config.transforms.crop
         )
         for phase in ['train', 'valid']
     }
     model = MODEL_LIST[config.model.version](pretrained=True)
     model = model.to(device)
+
+    model = torch.nn.DataParallel(model) # make parallel
 
     criterion = get_criterion(config)
     optimizer = get_optimizer(config, model)

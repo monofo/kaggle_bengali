@@ -1,4 +1,4 @@
-work_dir: 'se_resnext50_32x4d_4/'  
+work_dir: 'se_resnext50_32x4d_5/'
 data:   
   image_size: 128
   params:
@@ -16,26 +16,25 @@ transforms:
   crop: No
   threshold: 0.     
   sigma: 0.     
-  autoaugment_ratio: 0.5
-  augmix_ratio: 1.    
+  autoaugment_ratio: 1.    
   blur_ratio: 0.     
   noise_ratio: 0.     
   cutout_ratio: 0.     
   grid_distortion_ratio: 0.     
   random_brightness_ratio: 0.     
   piece_affine_ratio: 0.     
-  ssr_ratio: 0.
+  ssr_ratio: 0.     
   grid_mask_ratio: 0.     
-      
+  augmix_ratio: 0.      
   
 train:   
   batch_size: 128
-  num_epochs: 150
-  mixup: 0.4
-  cutmix: 0.4
+  num_epochs: 150   
+  mixup: 0.6
+  cutmix: 0.4  
   grid_mask: 0.
-  augmix: 0.
-  accumulation_size: 256
+  augmix: 0.   
+  accumulation_size: 0 
   resume: No    
   
 loss:   

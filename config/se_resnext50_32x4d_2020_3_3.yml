@@ -16,7 +16,7 @@ transforms:
   crop: No
   threshold: 0.     
   sigma: 0.     
-  autoaugment: Yes     
+  autoaugment_ratio: 1.    
   blur_ratio: 0.     
   noise_ratio: 0.     
   cutout_ratio: 0.     

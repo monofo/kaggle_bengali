@@ -10,6 +10,7 @@ from PIL import Image
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
+from transformars.transform_factory import GridMask, Transform, apply_aug
 
 DATA_PATH = "/home/kazuki/workspace/kaggle_bengali/data/input/"
 
@@ -95,6 +96,56 @@ class KaggleDataset(Dataset):
             'consonant_diacritics': torch.tensor(consonant_diacritic, dtype=torch.long)
         }
 
+# class KaggleDataset(Dataset):
+#     def __init__(self, images, df_label, transforms=None, crop=True):
+#         self.df_label = df_label
+#         self.images = images
+#         self.transforms = transforms
+#         self.crop = crop
+
+#     def __len__(self):
+#         return len(self.images)
+
+#     def __getitem__(self, index):
+#         grapheme_root = self.df_label.grapheme_root.values[index]
+#         vowel_diacritic = self.df_label.vowel_diacritic.values[index]
+#         consonant_diacritic = self.df_label.consonant_diacritic.values[index]
+
+#         image = self.images[index]
+#         image = 255 - image
+
+#         if self.crop:
+#             image = crop_resize(image)
+#         image = np.array(Image.fromarray(image).convert("RGB"))
+#         global choice
+#         if choice <= 0.5:
+#             image = Transform(size=128, autoaugment_ratio=1.,)(image)
+#             image = (image).astype(np.float32) / 255.
+#             return {
+#                 'images': torch.tensor(image, dtype=torch.float),
+#                 'grapheme_roots': torch.tensor(grapheme_root, dtype=torch.long),
+#                 'vowel_diacritics': torch.tensor(vowel_diacritic, dtype=torch.long),
+#                 'consonant_diacritics': torch.tensor(consonant_diacritic, dtype=torch.long),
+#                 'flag': 1
+#             }
+
+#         else:
+#             image = Transform(size=128, cutout_ratio=0.3, ssr_ratio=0.3)(image)
+#             image = (image).astype(np.float32) / 255.
+#             return {
+#                 'images': torch.tensor(image, dtype=torch.float),
+#                 'grapheme_roots': torch.tensor(grapheme_root, dtype=torch.long),
+#                 'vowel_diacritics': torch.tensor(vowel_diacritic, dtype=torch.long),
+#                 'consonant_diacritics': torch.tensor(consonant_diacritic, dtype=torch.long),
+#                 'flag': 0                
+#             }
+  
+#         return {
+#             'images': torch.tensor(image, dtype=torch.float),
+#             'grapheme_roots': torch.tensor(grapheme_root, dtype=torch.long),
+#             'vowel_diacritics': torch.tensor(vowel_diacritic, dtype=torch.long),
+#             'consonant_diacritics': torch.tensor(consonant_diacritic, dtype=torch.long)
+#         }
 
 def make_loader(
         phase,
@@ -106,7 +157,8 @@ def make_loader(
         transforms=None,
         crop=True,
         debug=False,
-):
+    ):
+
     if debug:
         num_rows = 100
     else:
@@ -123,7 +175,6 @@ def make_loader(
         train_df = train.iloc[train_ids]
         data_train = train_images[train_ids]
         image_dataset = KaggleDataset(data_train, train_df, transforms=transforms, crop=crop)
-        # train_sampler = torch.utils.data.distributed.DistributedSampler(image_dataset)
     else:
         valid_ids = folds[folds["fold"]==idx_fold].index
         valid_df = train.iloc[valid_ids]

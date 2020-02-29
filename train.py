@@ -29,34 +29,25 @@ from utils.utils import (EarlyStopping, cutmix, cutmix_criterion, get_logger,
 
 os.environ["CUDA_VISIBLE_DEVICES"]='0'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+choice = 0
 def do_train(model, data_loader, criterion, optimizer, device, config, grad_acc=1):
         model.train()
         train_loss = 0.0
         train_recall = 0.0
         optimizer.zero_grad()
         for idx, (inputs) in tqdm(enumerate(data_loader), total=len(data_loader)):
+            global choice
             choice = np.random.rand(1)
             x = inputs["images"].to(device, dtype=torch.float)
             grapheme_root = inputs["grapheme_roots"].to(device, dtype=torch.long)
             vowel_diacritic = inputs["vowel_diacritics"].to(device, dtype=torch.long)
             consonant_diacritic = inputs["consonant_diacritics"].to(device, dtype=torch.long)
+            flag = inputs["flag"]
             
             if choice <= config.train.cutmix:
                 data, targets = cutmix(x, grapheme_root, vowel_diacritic, consonant_diacritic, 1.)
                 logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
                 loss_gr, loss_vd, loss_cd = cutmix_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
-
-            elif choice <= config.train.cutmix + config.train.mixup:
-                data, targets = mixup(x, grapheme_root, vowel_diacritic, consonant_diacritic, 0.4)
-                logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
-                loss_gr, loss_vd, loss_cd = mixup_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
-            # elif choice <= config.train.cutmix + config.train.mixup + config.train.grid_mask:
-            #     x = get_trans(x)
-            #     logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
-            #     loss_gr = criterion(logit_grapheme_root, grapheme_root)
-            #     loss_vd = criterion(logit_vowel_diacritic, vowel_diacritic )
-            #     loss_cd = criterion(logit_consonant_diacritic, consonant_diacritic)
             else:
                 logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
                 loss_gr = criterion(logit_grapheme_root, grapheme_root)
@@ -90,6 +81,7 @@ def do_eval(model, data_loader, criterion, device):
             grapheme_root = inputs["grapheme_roots"].to(device, dtype=torch.long)
             vowel_diacritic = inputs["vowel_diacritics"].to(device, dtype=torch.long)
             consonant_diacritic = inputs["consonant_diacritics"].to(device, dtype=torch.long)
+            
 
             logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
 

@@ -71,7 +71,7 @@ class Transform:
                  autoaugment_ratio=0., normalize=True, train=True, threshold=40.,
                  sigma=-1., blur_ratio=0., noise_ratio=0., cutout_ratio=0.,
                  grid_distortion_ratio=0., elastic_distortion_ratio=0., random_brightness_ratio=0.,
-                 piece_affine_ratio=0., ssr_ratio=0., grid_mask_ratio=0., augmix_ratio=0.):
+                 piece_affine_ratio=0., ssr_ratio=0., grid_mask_ratio=0., augmix_ratio=0., random_size_crop_ratio=0.):
         self.affine = affine
         self.crop = crop
         self.size = size
@@ -91,6 +91,7 @@ class Transform:
         self.ssr_ratio = ssr_ratio
         self.grid_mask_ratio = grid_mask_ratio
         self.augmix_ratio = augmix_ratio
+        self.random_size_crop_ratio = random_size_crop_ratio
 
     def __call__(self, example):
         if self.train:
@@ -174,7 +175,8 @@ class Transform:
                 scale_limit=0.1,
                 rotate_limit=10,
                 p=1.0), x)
-
+        if _evaluate_ratio(self.random_size_crop_ratio):
+            x = apply_aug(A.RandomSizedCrop(min_max_height=(int(100), int(128)), height=128, width=128, w2h_ratio=1., interpolation=1, p=1.), x)
         if self.normalize:
             x = apply_aug(A.Normalize(
                 (0.485, 0.456, 0.406),

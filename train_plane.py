@@ -35,8 +35,8 @@ def do_train(model, data_loader, criterion, optimizer, device, config, grad_acc=
         train_loss = 0.0
         train_recall = 0.0
         optimizer.zero_grad()
+        choice = np.random.rand(1)
         for idx, (inputs) in tqdm(enumerate(data_loader), total=len(data_loader)):
-            choice = np.random.rand(1)
             x = inputs["images"].to(device, dtype=torch.float)
             grapheme_root = inputs["grapheme_roots"].to(device, dtype=torch.long)
             vowel_diacritic = inputs["vowel_diacritics"].to(device, dtype=torch.long)

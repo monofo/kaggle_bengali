@@ -18,8 +18,8 @@ from transformars.autoaugment import ImageNetPolicy, SVHNPolicy
 HEIGHT = 137
 WIDTH = 236
 
-# policy = ImageNetPolicy()
-policy = SVHNPolicy()
+policy = ImageNetPolicy()
+# policy = SVHNPolicy()
 
 def affine_image(img):
 
@@ -68,7 +68,7 @@ def apply_aug(aug, image):
 
 class Transform:
     def __init__(self, affine=False, crop=False, size=224,
-                 autoaugment_ratio=0., normalize=True, train=True, threshold=40.,
+                 autoaugment_ratio=0., normalize=False, train=True, threshold=40.,
                  sigma=-1., blur_ratio=0., noise_ratio=0., cutout_ratio=0.,
                  grid_distortion_ratio=0., elastic_distortion_ratio=0., random_brightness_ratio=0.,
                  piece_affine_ratio=0., ssr_ratio=0., grid_mask_ratio=0., augmix_ratio=0., random_size_crop_ratio=0.):
@@ -94,10 +94,7 @@ class Transform:
         self.random_size_crop_ratio = random_size_crop_ratio
 
     def __call__(self, example):
-        if self.train:
-            x = example
-        else:
-            x = example
+        x = example
         # --- Augmentation ---
         if self.affine:
             x = affine_image(x)
@@ -108,20 +105,20 @@ class Transform:
         if self.sigma > 0.:
             x = add_gaussian_noise(x, sigma=self.sigma)
         
-        
         if _evaluate_ratio(self.autoaugment_ratio):
             x = policy(Image.fromarray(x).convert("RGB"))
             x = np.array(x)
         elif _evaluate_ratio(self.augmix_ratio):
             r = np.random.uniform()
-            if r < 0.30:
-                x = apply_aug(RandomAugMix(severity=1, width=1, p=1.), x)
-            elif r < 0.5:
-                x = apply_aug(RandomAugMix(severity=3, width=7, alpha=5, p=1.), x)
-            elif r < 0.75:
-                x = apply_aug(RandomAugMix(severity=1, width=1, p=1.), x)
-            else:
-                x = apply_aug(RandomAugMix(severity=3, width=7, alpha=5, p=1.), x)
+            x = apply_aug(RandomAugMix(severity=1, width=1, p=1.), x)
+            # if r < 0.25:
+            #     x = apply_aug(RandomAugMix(severity=1, width=1, p=1.), x)
+            # elif r < 0.5:
+            #     x = apply_aug(RandomAugMix(severity=3, width=3, alpha=1, p=1.), x)
+            # elif r < 0.75:
+            #     x = apply_aug(RandomAugMix(severity=1, width=1, p=1.), x)
+            # else:
+            #     x = apply_aug(RandomAugMix(severity=3, width=3, alpha=1, p=1.), x)
 
         if _evaluate_ratio(self.grid_mask_ratio):
             r = np.random.uniform()
@@ -154,7 +151,7 @@ class Transform:
                 x = apply_aug(A.MultiplicativeNoise(p=1.0), x)
 
         if _evaluate_ratio(self.cutout_ratio):
-            x = apply_aug(A.CoarseDropout(max_holes=8, max_height=8, max_width=8, p=1.0), x)
+            x = apply_aug(A.CoarseDropout(max_holes=8, max_height=18, max_width=18, p=1.0), x)
 
         if _evaluate_ratio(self.grid_distortion_ratio):
             x = apply_aug(A.GridDistortion(p=1.0), x)
@@ -175,8 +172,10 @@ class Transform:
                 scale_limit=0.1,
                 rotate_limit=10,
                 p=1.0), x)
+                
         if _evaluate_ratio(self.random_size_crop_ratio):
-            x = apply_aug(A.RandomSizedCrop(min_max_height=(int(100), int(128)), height=128, width=128, w2h_ratio=1., interpolation=1, p=1.), x)
+            x = apply_aug(A.RandomSizedCrop(min_max_height=(int(100), int(137)), height=137, width=236,  w2h_ratio=1.7, interpolation=1, p=1.), x)
+            
         if self.normalize:
             x = apply_aug(A.Normalize(
                 (0.485, 0.456, 0.406),
@@ -184,9 +183,9 @@ class Transform:
                 max_pixel_value=1.,
                 always_apply=True
             ), x)
-
         x = x.astype(np.float32)
         x = np.transpose(x, (2, 0, 1))
+
         
         if self.train:
             # y = y.astype(np.int64)

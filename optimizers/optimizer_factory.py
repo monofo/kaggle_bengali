@@ -50,7 +50,7 @@ def get_optimizer(config, model, filter_bias_and_bn=True):
             parameters, lr=config.optimizer.params.lr, momentum=config.optimizer.params.momentum, weight_decay=weight_decay, nesterov=True)
     elif opt_lower == 'adam':
         optimizer = optim.Adam(
-            parameters, lr=config.optimizer.params.lr, weight_decay=weight_decay, eps=config.optimizer.params.opt_eps)
+            parameters, lr=config.optimizer.params.lr)
     elif opt_lower == 'adamw':
         optimizer = AdamW(
             parameters, lr=config.optimizer.params.lr, weight_decay=weight_decay, eps=config.optimizer.params.opt_eps)

@@ -132,9 +132,16 @@ augmentations_all = [
     translate_x, translate_y, color, contrast, brightness, sharpness
 ]
 
+MEAN = [0.4914, 0.4822, 0.4465]
+STD = [0.2023, 0.1994, 0.2010]
+
+
 def normalize(image):
-    """Normalize input image channel-wise to zero mean and unit variance."""
-    return image - 127
+  """Normalize input image channel-wise to zero mean and unit variance."""
+  image = image.transpose(2, 0, 1)  # Switch to channel-first
+  mean, std = np.array(MEAN), np.array(STD)
+  #image = (image - mean[:, None, None]) / std[:, None, None]
+  return image.transpose(1, 2, 0)
 
 def apply_op(image, op, severity):
     #   image = np.clip(image, 0, 255)

@@ -1,0 +1,58 @@
+work_dir: 'resnet34_12/'  
+data:   
+  image_size: -1
+  params:
+    idx: 0
+    fold_csv: 'train_with_fold_seed12.csv'
+  
+
+model:   
+  version:  'resnet34'   
+  pretrained: Yes
+  
+# SVHNPolicy
+transforms:     
+  affine: No     
+  crop: No
+  threshold: 0.     
+  sigma: 0.     
+  autoaugment_ratio: .3    
+  blur_ratio: 0.2  
+  noise_ratio: 0.     
+  cutout_ratio: 0.2
+  grid_distortion_ratio: 0.  
+  random_brightness_ratio: 0.2     
+  piece_affine_ratio: 0.     
+  ssr_ratio: 0.2
+  random_size_crop_ratio: .2
+  grid_mask_ratio: 0.     
+  augmix_ratio: 0.
+  normalize: No
+  
+train:   
+  batch_size: 128
+  num_epochs: 150   
+  mixup: 0.3
+  cutmix: 0.4 
+  grid_mask: 0.
+  augmix: 0.   
+  accumulation_size: 0 
+  resume: No    
+  
+loss:   
+  name: "CrossEntropy"  
+  
+optimizer:
+    name: 'Adam'
+    params:
+        lr: 5.0e-4
+        opt_eps: 1.0e-8
+        weight_decay: 1.0e-4
+    lookahead:
+        apply: No
+
+scheduler:   
+  name: 'multi_step'  
+  
+num_workers: 16 
+device: 'cuda' 

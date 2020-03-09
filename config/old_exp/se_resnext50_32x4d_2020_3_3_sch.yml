@@ -1,4 +1,4 @@
-work_dir: 'se_resnext50_32x4d_2020_3_03/'  
+work_dir: 'se_resnext50_32x4d_2020_3_03__/'  
 data:   
   image_size: 128
   params:
@@ -31,7 +31,7 @@ train:
   batch_size: 128
   num_epochs: 150   
   mixup: 0.
-  cutmix: 1.   
+  cutmix: .6   
   grid_mask: 0.
   augmix: 0.   
   accumulation_size: 0 

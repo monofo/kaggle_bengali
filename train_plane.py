@@ -27,15 +27,17 @@ from utils.metrics import macro_recall_multi
 from utils.utils import (EarlyStopping, cutmix, cutmix_criterion, get_logger,
                          mixup, mixup_criterion, ohem_loss, rand_bbox)
 
-os.environ["CUDA_VISIBLE_DEVICES"]='0'
+os.environ["CUDA_VISIBLE_DEVICES"]='2,3'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+SCALE = 4
 
-def do_train(model, data_loader, criterion, optimizer, device, config, grad_acc=1):
+def do_train(model, data_loader, criterion, optimizer, device, config, epoch, grad_acc=1):
         model.train()
         train_loss = 0.0
         train_recall = 0.0
         optimizer.zero_grad()
         choice = np.random.rand(1)
+
         for idx, (inputs) in tqdm(enumerate(data_loader), total=len(data_loader)):
             x = inputs["images"].to(device, dtype=torch.float)
             grapheme_root = inputs["grapheme_roots"].to(device, dtype=torch.long)
@@ -43,20 +45,15 @@ def do_train(model, data_loader, criterion, optimizer, device, config, grad_acc=
             consonant_diacritic = inputs["consonant_diacritics"].to(device, dtype=torch.long)
             
             if choice <= config.train.cutmix:
+            # if (epoch + 1) % 5 != 0:
                 data, targets = cutmix(x, grapheme_root, vowel_diacritic, consonant_diacritic, 1.)
                 logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
                 loss_gr, loss_vd, loss_cd = cutmix_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
 
-            elif choice <= config.train.cutmix + config.train.mixup:
-                data, targets = mixup(x, grapheme_root, vowel_diacritic, consonant_diacritic, 0.4)
-                logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
-                loss_gr, loss_vd, loss_cd = mixup_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
-            # elif choice <= config.train.cutmix + config.train.mixup + config.train.grid_mask:
-            #     x = get_trans(x)
-            #     logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
-            #     loss_gr = criterion(logit_grapheme_root, grapheme_root)
-            #     loss_vd = criterion(logit_vowel_diacritic, vowel_diacritic )
-            #     loss_cd = criterion(logit_consonant_diacritic, consonant_diacritic)
+            # elif choice <= config.train.cutmix + config.train.mixup:
+            #     data, targets = mixup(x, grapheme_root, vowel_diacritic, consonant_diacritic, 0.4)
+            #     logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
+            #     loss_gr, loss_vd, loss_cd = mixup_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
             else:
                 logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
                 loss_gr = criterion(logit_grapheme_root, grapheme_root)
@@ -65,12 +62,12 @@ def do_train(model, data_loader, criterion, optimizer, device, config, grad_acc=
 
             train_recall += macro_recall_multi(logit_grapheme_root, grapheme_root, logit_vowel_diacritic, vowel_diacritic, logit_consonant_diacritic, consonant_diacritic)
 
-            ((8 * loss_gr + loss_cd + loss_vd) / grad_acc).backward()
+            ((SCALE * loss_gr + loss_cd + loss_vd) / grad_acc).backward()
 
             if (idx % grad_acc) == 0:
                 optimizer.step()
                 optimizer.zero_grad()
-            train_loss += 8 * loss_gr.item() + loss_vd.item() + loss_cd.item()
+            train_loss += SCALE * loss_gr.item() + loss_vd.item() + loss_cd.item()
 
         train_loss /= len(data_loader)
         train_recall /= len(data_loader)
@@ -99,7 +96,7 @@ def do_eval(model, data_loader, criterion, device):
 
             valid_recall += macro_recall_multi(logit_grapheme_root, grapheme_root, logit_vowel_diacritic, vowel_diacritic, logit_consonant_diacritic, consonant_diacritic)
 
-            total_loss += 8 * loss_gr.item() + loss_vd.item() + loss_cd.item()
+            total_loss += SCALE * loss_gr.item() + loss_vd.item() +  loss_cd.item()
 
         total_loss /= len(data_loader)
         valid_recall /= len(data_loader)
@@ -147,13 +144,14 @@ def run(config_file):
         )
         for phase in ['train', 'valid']
     }
-    model = MODEL_LIST[config.model.version](pretrained=True)
+    model = MODEL_LIST[config.model.version](pretrained=config.model.pretrained)
     
 
     if torch.cuda.device_count() > 1:
         print("Let's use", torch.cuda.device_count(), "GPUs!")
         model = nn.DataParallel(model)
         config.optimizer.params.lr *= torch.cuda.device_count()
+        torch.backends.cudnn.benchmark = True
 
     model = model.to(device)
 
@@ -168,7 +166,7 @@ def run(config_file):
     best_valid_recall = 0.0
     if config.train.resume:
         print('resume checkpoints')
-        checkpoint = torch.load(config.work_dir + "/checkpoints/" + "best.pth")
+        checkpoint = torch.load("/home/kazuki/workspace/kaggle_bengali/result/" + config.train.path)
         model.load_state_dict(checkpoint['checkpoint'])
         best_valid_recall = checkpoint['best_valid_recall']
 
@@ -182,11 +180,13 @@ def run(config_file):
         logger.info(f'epoch {epoch} start ')
 
         # train code
-        metric_train = do_train(model, dataloaders["train"], criterion, optimizer, device, config, accumlate_step)
+        metric_train = do_train(model, dataloaders["train"], criterion, optimizer, device, config, epoch, accumlate_step)
+        torch.cuda.empty_cache()
         metrics_eval = do_eval(model, dataloaders["valid"], criterion, device)
+        torch.cuda.empty_cache()
         valid_recall = metrics_eval["valid_recall"]
 
-        scheduler.step(metrics_eval["valid_loss"])
+        scheduler.step(metrics_eval["valid_recall"])
 
         # early_stopping(metrics_eval["valid_loss"], model)
 

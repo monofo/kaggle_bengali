@@ -1,0 +1,211 @@
+2020-03-03 00:01:10,381 - Log - INFO - epoch 1 start 
+2020-03-03 00:05:38,633 - Log - INFO - epoch 1 start 
+2020-03-03 00:10:27,511 - Log - INFO - epoch 1 start 
+2020-03-03 00:16:22,974 - Log - INFO - epoch 1 start 
+2020-03-03 00:21:42,225 - Log - INFO - epoch 1 start 
+2020-03-03 00:35:39,468 - Log - INFO - epoch: 1 {'train_loss': 18.68345652730139, 'train_recall': 0.6617454794016894} {'valid_loss': 3.38364628627659, 'valid_recall': 0.899735960845741}
+2020-03-03 00:35:39,470 - Log - INFO - save checkpoint: best_recall:0.899735960845741
+2020-03-03 00:35:40,696 - Log - INFO - epoch 2 start 
+2020-03-03 00:49:42,074 - Log - INFO - epoch: 2 {'train_loss': 13.272866014582567, 'train_recall': 0.878493297614544} {'valid_loss': 2.5867546521317046, 'valid_recall': 0.9216437394287019}
+2020-03-03 00:49:42,076 - Log - INFO - save checkpoint: best_recall:0.9216437394287019
+2020-03-03 00:49:43,204 - Log - INFO - epoch 3 start 
+2020-03-03 01:03:46,293 - Log - INFO - epoch: 3 {'train_loss': 12.255247226494543, 'train_recall': 0.905488539437735} {'valid_loss': 2.143902896310256, 'valid_recall': 0.9320422342776826}
+2020-03-03 01:03:46,295 - Log - INFO - save checkpoint: best_recall:0.9320422342776826
+2020-03-03 01:03:47,520 - Log - INFO - epoch 4 start 
+2020-03-03 01:17:53,038 - Log - INFO - epoch: 4 {'train_loss': 11.535427208828148, 'train_recall': 0.9206009926293122} {'valid_loss': 2.1199389879241775, 'valid_recall': 0.9332817077874764}
+2020-03-03 01:17:53,039 - Log - INFO - save checkpoint: best_recall:0.9332817077874764
+2020-03-03 01:17:54,232 - Log - INFO - epoch 5 start 
+2020-03-03 01:31:54,756 - Log - INFO - epoch: 5 {'train_loss': 11.140311314416913, 'train_recall': 0.9304715486222062} {'valid_loss': 1.7140612986033699, 'valid_recall': 0.9451603609296242}
+2020-03-03 01:31:54,758 - Log - INFO - save checkpoint: best_recall:0.9451603609296242
+2020-03-03 01:31:55,902 - Log - INFO - epoch 6 start 
+2020-03-03 01:45:50,825 - Log - INFO - epoch: 6 {'train_loss': 10.870481630986797, 'train_recall': 0.9377598750477404} {'valid_loss': 1.539234484830622, 'valid_recall': 0.949564439526487}
+2020-03-03 01:45:50,826 - Log - INFO - save checkpoint: best_recall:0.949564439526487
+2020-03-03 01:45:51,936 - Log - INFO - epoch 7 start 
+2020-03-03 01:59:45,638 - Log - INFO - epoch: 7 {'train_loss': 10.528295607163267, 'train_recall': 0.9444583077141012} {'valid_loss': 1.5617105635061006, 'valid_recall': 0.9480782701535077}
+2020-03-03 01:59:45,639 - Log - INFO - epoch 8 start 
+2020-03-03 02:13:40,036 - Log - INFO - epoch: 8 {'train_loss': 10.369139876538588, 'train_recall': 0.9477099244857274} {'valid_loss': 1.465139529353399, 'valid_recall': 0.9509889778029889}
+2020-03-03 02:13:40,037 - Log - INFO - save checkpoint: best_recall:0.9509889778029889
+2020-03-03 02:13:41,133 - Log - INFO - epoch 9 start 
+2020-03-03 02:27:37,783 - Log - INFO - epoch: 9 {'train_loss': 10.065946236958974, 'train_recall': 0.9513781542767457} {'valid_loss': 1.463854963464105, 'valid_recall': 0.9521656209688484}
+2020-03-03 02:27:37,784 - Log - INFO - save checkpoint: best_recall:0.9521656209688484
+2020-03-03 02:27:38,928 - Log - INFO - epoch 10 start 
+2020-03-03 02:41:37,498 - Log - INFO - epoch: 10 {'train_loss': 10.058676459352151, 'train_recall': 0.9543865277603835} {'valid_loss': 1.3524170775844413, 'valid_recall': 0.9525531276776401}
+2020-03-03 02:41:37,500 - Log - INFO - save checkpoint: best_recall:0.9525531276776401
+2020-03-03 02:41:38,643 - Log - INFO - epoch 11 start 
+2020-03-03 02:55:33,160 - Log - INFO - epoch: 11 {'train_loss': 9.618287109690879, 'train_recall': 0.9574172079433199} {'valid_loss': 1.3004536746265545, 'valid_recall': 0.9535246349711863}
+2020-03-03 02:55:33,165 - Log - INFO - save checkpoint: best_recall:0.9535246349711863
+2020-03-03 02:55:34,321 - Log - INFO - epoch 12 start 
+2020-03-03 03:09:32,132 - Log - INFO - epoch: 12 {'train_loss': 9.742413820365792, 'train_recall': 0.9595631370177737} {'valid_loss': 1.2783259749264237, 'valid_recall': 0.954858786339645}
+2020-03-03 03:09:32,133 - Log - INFO - save checkpoint: best_recall:0.954858786339645
+2020-03-03 03:09:33,243 - Log - INFO - epoch 13 start 
+2020-03-03 03:23:29,710 - Log - INFO - epoch: 13 {'train_loss': 9.398359543563407, 'train_recall': 0.9611033696468998} {'valid_loss': 1.266748388197012, 'valid_recall': 0.9582951176956662}
+2020-03-03 03:23:29,711 - Log - INFO - save checkpoint: best_recall:0.9582951176956662
+2020-03-03 03:23:30,848 - Log - INFO - epoch 14 start 
+2020-03-03 03:37:29,754 - Log - INFO - epoch: 14 {'train_loss': 9.37886924027643, 'train_recall': 0.9639497180015049} {'valid_loss': 1.2254584628382734, 'valid_recall': 0.9569312159391505}
+2020-03-03 03:37:29,756 - Log - INFO - epoch 15 start 
+2020-03-03 03:51:24,156 - Log - INFO - epoch: 15 {'train_loss': 9.251388810475609, 'train_recall': 0.9661253595214355} {'valid_loss': 1.234581279040427, 'valid_recall': 0.957014956355397}
+2020-03-03 03:51:24,157 - Log - INFO - epoch 16 start 
+2020-03-03 04:05:22,162 - Log - INFO - epoch: 16 {'train_loss': 9.33754509782596, 'train_recall': 0.9673726597928562} {'valid_loss': 1.1352235844987593, 'valid_recall': 0.9605490852364293}
+2020-03-03 04:05:22,163 - Log - INFO - save checkpoint: best_recall:0.9605490852364293
+2020-03-03 04:05:23,293 - Log - INFO - epoch 17 start 
+2020-03-03 04:19:27,603 - Log - INFO - epoch: 17 {'train_loss': 9.134024775876693, 'train_recall': 0.9691797896834442} {'valid_loss': 1.0796901564585388, 'valid_recall': 0.9608565778502779}
+2020-03-03 04:19:27,604 - Log - INFO - save checkpoint: best_recall:0.9608565778502779
+2020-03-03 04:19:28,726 - Log - INFO - epoch 18 start 
+2020-03-03 04:33:26,571 - Log - INFO - epoch: 18 {'train_loss': 9.09961351811328, 'train_recall': 0.9696053723515571} {'valid_loss': 1.1448060270327671, 'valid_recall': 0.9597331798961432}
+2020-03-03 04:33:26,572 - Log - INFO - epoch 19 start 
+2020-03-03 04:47:22,659 - Log - INFO - epoch: 19 {'train_loss': 9.152803066297505, 'train_recall': 0.9711251856119113} {'valid_loss': 1.0590542715286042, 'valid_recall': 0.9626541507865516}
+2020-03-03 04:47:22,659 - Log - INFO - save checkpoint: best_recall:0.9626541507865516
+2020-03-03 04:47:23,815 - Log - INFO - epoch 20 start 
+2020-03-03 05:01:21,399 - Log - INFO - epoch: 20 {'train_loss': 8.919211536223067, 'train_recall': 0.9723732530735293} {'valid_loss': 1.2466083541126909, 'valid_recall': 0.9572330345523508}
+2020-03-03 05:01:21,400 - Log - INFO - epoch 21 start 
+2020-03-03 05:15:19,930 - Log - INFO - epoch: 21 {'train_loss': 8.77235694140365, 'train_recall': 0.9733472507184149} {'valid_loss': 1.0809824327155235, 'valid_recall': 0.962362281415338}
+2020-03-03 05:15:19,931 - Log - INFO - epoch 22 start 
+2020-03-03 05:29:24,244 - Log - INFO - epoch: 22 {'train_loss': 8.792652691267534, 'train_recall': 0.9743359964719112} {'valid_loss': 1.0399344870212612, 'valid_recall': 0.962504325888153}
+2020-03-03 05:29:24,245 - Log - INFO - epoch 23 start 
+2020-03-03 05:43:21,248 - Log - INFO - epoch: 23 {'train_loss': 8.808530377259693, 'train_recall': 0.9755552135632504} {'valid_loss': 1.0365934779105268, 'valid_recall': 0.9642539371310362}
+2020-03-03 05:43:21,248 - Log - INFO - save checkpoint: best_recall:0.9642539371310362
+2020-03-03 05:43:22,392 - Log - INFO - epoch 24 start 
+2020-03-03 05:57:20,224 - Log - INFO - epoch: 24 {'train_loss': 8.681296261904999, 'train_recall': 0.9765319657523935} {'valid_loss': 1.0446029992530916, 'valid_recall': 0.9637122345000118}
+2020-03-03 05:57:20,225 - Log - INFO - epoch 25 start 
+2020-03-03 06:11:16,942 - Log - INFO - epoch: 25 {'train_loss': 8.683243794885232, 'train_recall': 0.9773846815039248} {'valid_loss': 1.069262059352058, 'valid_recall': 0.9626919067620632}
+2020-03-03 06:11:16,942 - Log - INFO - epoch 26 start 
+2020-03-03 06:25:15,567 - Log - INFO - epoch: 26 {'train_loss': 8.785897069496048, 'train_recall': 0.9779063679401049} {'valid_loss': 1.0066793431545709, 'valid_recall': 0.9648082116154186}
+2020-03-03 06:25:15,568 - Log - INFO - save checkpoint: best_recall:0.9648082116154186
+2020-03-03 06:25:16,784 - Log - INFO - epoch 27 start 
+2020-03-03 06:39:12,557 - Log - INFO - epoch: 27 {'train_loss': 8.660183281881407, 'train_recall': 0.9785703017996704} {'valid_loss': 1.0084118627450744, 'valid_recall': 0.9639928972593694}
+2020-03-03 06:39:12,558 - Log - INFO - epoch 28 start 
+2020-03-03 06:53:08,511 - Log - INFO - epoch: 28 {'train_loss': 8.56038352835342, 'train_recall': 0.979706476116003} {'valid_loss': 1.0480838085474316, 'valid_recall': 0.9640092166964704}
+2020-03-03 06:53:08,511 - Log - INFO - epoch 29 start 
+2020-03-03 07:07:02,975 - Log - INFO - epoch: 29 {'train_loss': 8.55143803029389, 'train_recall': 0.9798030344487043} {'valid_loss': 1.0084031249476584, 'valid_recall': 0.9664617536661084}
+2020-03-03 07:07:02,976 - Log - INFO - save checkpoint: best_recall:0.9664617536661084
+2020-03-03 07:07:04,085 - Log - INFO - epoch 30 start 
+2020-03-03 07:20:59,267 - Log - INFO - epoch: 30 {'train_loss': 8.460605520901558, 'train_recall': 0.9810031751613426} {'valid_loss': 1.0077515442656935, 'valid_recall': 0.9652899770469844}
+2020-03-03 07:20:59,268 - Log - INFO - epoch 31 start 
+2020-03-03 07:34:54,638 - Log - INFO - epoch: 31 {'train_loss': 8.489827329566616, 'train_recall': 0.9815434238372504} {'valid_loss': 0.9974333335420081, 'valid_recall': 0.9653777888688944}
+2020-03-03 07:34:54,639 - Log - INFO - epoch 32 start 
+2020-03-03 07:48:48,592 - Log - INFO - epoch: 32 {'train_loss': 8.39618778117639, 'train_recall': 0.9817002480931446} {'valid_loss': 1.035611383176474, 'valid_recall': 0.96398726081403}
+2020-03-03 07:48:48,592 - Log - INFO - epoch 33 start 
+2020-03-03 08:02:45,367 - Log - INFO - epoch: 33 {'train_loss': 8.353929256196963, 'train_recall': 0.9821757389301317} {'valid_loss': 0.9363816548361307, 'valid_recall': 0.9668693050281456}
+2020-03-03 08:02:45,367 - Log - INFO - save checkpoint: best_recall:0.9668693050281456
+2020-03-03 08:02:46,486 - Log - INFO - epoch 34 start 
+2020-03-03 08:16:36,337 - Log - INFO - epoch: 34 {'train_loss': 8.194791752376235, 'train_recall': 0.9826690489757576} {'valid_loss': 0.9515612177642738, 'valid_recall': 0.9679073208033936}
+2020-03-03 08:16:36,338 - Log - INFO - save checkpoint: best_recall:0.9679073208033936
+2020-03-03 08:16:37,431 - Log - INFO - epoch 35 start 
+2020-03-03 08:30:33,728 - Log - INFO - epoch: 35 {'train_loss': 8.252094396615155, 'train_recall': 0.9838916500729026} {'valid_loss': 1.013550003975701, 'valid_recall': 0.9649839674367915}
+2020-03-03 08:30:33,728 - Log - INFO - epoch 36 start 
+2020-03-03 08:44:29,809 - Log - INFO - epoch: 36 {'train_loss': 8.213364158122426, 'train_recall': 0.9832684258373416} {'valid_loss': 0.9621073880120162, 'valid_recall': 0.9665197919893429}
+2020-03-03 08:44:29,810 - Log - INFO - epoch 37 start 
+2020-03-03 08:58:26,905 - Log - INFO - epoch: 37 {'train_loss': 8.240270436847489, 'train_recall': 0.9842225498063585} {'valid_loss': 1.0058589158905966, 'valid_recall': 0.9651321241624445}
+2020-03-03 08:58:26,905 - Log - INFO - epoch 38 start 
+2020-03-03 09:12:22,842 - Log - INFO - epoch: 38 {'train_loss': 8.2025383205666, 'train_recall': 0.9843538520600247} {'valid_loss': 0.901173364543089, 'valid_recall': 0.9687235540160235}
+2020-03-03 09:12:22,843 - Log - INFO - save checkpoint: best_recall:0.9687235540160235
+2020-03-03 09:12:23,965 - Log - INFO - epoch 39 start 
+2020-03-03 09:26:23,842 - Log - INFO - epoch: 39 {'train_loss': 8.207570629867558, 'train_recall': 0.9846258160254827} {'valid_loss': 0.9308693706915139, 'valid_recall': 0.9679074039015599}
+2020-03-03 09:26:23,842 - Log - INFO - epoch 40 start 
+2020-03-03 09:40:21,876 - Log - INFO - epoch: 40 {'train_loss': 8.191801066890548, 'train_recall': 0.9846041128718139} {'valid_loss': 0.8942993748503008, 'valid_recall': 0.9702432160435436}
+2020-03-03 09:40:21,877 - Log - INFO - save checkpoint: best_recall:0.9702432160435436
+2020-03-03 09:40:22,998 - Log - INFO - epoch 41 start 
+2020-03-03 09:54:25,665 - Log - INFO - epoch: 41 {'train_loss': 8.170831785394137, 'train_recall': 0.9855485377554336} {'valid_loss': 0.9036684353149252, 'valid_recall': 0.969413150174178}
+2020-03-03 09:54:25,666 - Log - INFO - epoch 42 start 
+2020-03-03 10:08:34,102 - Log - INFO - epoch: 42 {'train_loss': 8.130768571407632, 'train_recall': 0.9853175962643842} {'valid_loss': 0.9710114488443419, 'valid_recall': 0.9667348309320836}
+2020-03-03 10:08:34,104 - Log - INFO - epoch 43 start 
+2020-03-03 10:22:42,215 - Log - INFO - epoch: 43 {'train_loss': 8.044696084764826, 'train_recall': 0.9859423153914737} {'valid_loss': 0.9070628208840847, 'valid_recall': 0.96865611464134}
+2020-03-03 10:22:42,216 - Log - INFO - epoch 44 start 
+2020-03-03 10:36:54,781 - Log - INFO - epoch: 44 {'train_loss': 8.000773006950757, 'train_recall': 0.986194376562609} {'valid_loss': 0.8674933165875353, 'valid_recall': 0.9707595009794777}
+2020-03-03 10:36:54,782 - Log - INFO - save checkpoint: best_recall:0.9707595009794777
+2020-03-03 10:36:55,980 - Log - INFO - epoch 45 start 
+2020-03-03 10:51:20,677 - Log - INFO - epoch: 45 {'train_loss': 7.905796593101862, 'train_recall': 0.9856222264012414} {'valid_loss': 0.9183854871669749, 'valid_recall': 0.9676730019085791}
+2020-03-03 10:51:20,678 - Log - INFO - epoch 46 start 
+2020-03-03 11:05:48,105 - Log - INFO - epoch: 46 {'train_loss': 8.042123511866809, 'train_recall': 0.9868767391362967} {'valid_loss': 0.8783628533677358, 'valid_recall': 0.970037849140314}
+2020-03-03 11:05:48,105 - Log - INFO - epoch 47 start 
+2020-03-03 11:20:13,404 - Log - INFO - epoch: 47 {'train_loss': 7.96076395607556, 'train_recall': 0.9874126114191359} {'valid_loss': 0.8590574618933164, 'valid_recall': 0.9709627572372438}
+2020-03-03 11:20:13,404 - Log - INFO - save checkpoint: best_recall:0.9709627572372438
+2020-03-03 11:20:14,652 - Log - INFO - epoch 48 start 
+2020-03-03 11:34:42,026 - Log - INFO - epoch: 48 {'train_loss': 7.964801277297322, 'train_recall': 0.9872548847035933} {'valid_loss': 0.8616234932367683, 'valid_recall': 0.9716476177165929}
+2020-03-03 11:34:42,026 - Log - INFO - save checkpoint: best_recall:0.9716476177165929
+2020-03-03 11:34:43,144 - Log - INFO - epoch 49 start 
+2020-03-03 11:49:09,067 - Log - INFO - epoch: 49 {'train_loss': 7.807800093272939, 'train_recall': 0.9867975117490503} {'valid_loss': 0.8745792530147821, 'valid_recall': 0.9702278777550646}
+2020-03-03 11:49:09,068 - Log - INFO - epoch 50 start 
+2020-03-03 12:03:35,124 - Log - INFO - epoch: 50 {'train_loss': 7.883867827810462, 'train_recall': 0.9878405826370966} {'valid_loss': 0.8726333096596727, 'valid_recall': 0.9696104011746619}
+2020-03-03 12:03:35,124 - Log - INFO - epoch 51 start 
+2020-03-03 12:18:07,289 - Log - INFO - epoch: 51 {'train_loss': 7.762278265042333, 'train_recall': 0.9882648907420805} {'valid_loss': 0.9063438617381131, 'valid_recall': 0.9691390892813576}
+2020-03-03 12:18:07,290 - Log - INFO - epoch 52 start 
+2020-03-03 12:32:35,125 - Log - INFO - epoch: 52 {'train_loss': 7.758170569111188, 'train_recall': 0.9874095605787692} {'valid_loss': 0.9218969239696124, 'valid_recall': 0.9684951383812483}
+2020-03-03 12:32:35,125 - Log - INFO - epoch 53 start 
+2020-03-03 12:47:05,208 - Log - INFO - epoch: 53 {'train_loss': 7.887194520317624, 'train_recall': 0.9873863654423954} {'valid_loss': 0.8135592623044303, 'valid_recall': 0.9710520837097495}
+2020-03-03 12:47:05,209 - Log - INFO - epoch 54 start 
+2020-03-03 13:01:34,579 - Log - INFO - epoch: 54 {'train_loss': 7.820570843717457, 'train_recall': 0.9876321755978241} {'valid_loss': 0.9617435494341419, 'valid_recall': 0.9685846041443376}
+2020-03-03 13:01:34,580 - Log - INFO - epoch 55 start 
+2020-03-03 13:16:03,910 - Log - INFO - epoch: 55 {'train_loss': 7.787600939268523, 'train_recall': 0.9881652647577843} {'valid_loss': 0.8553046982440279, 'valid_recall': 0.9705480098255279}
+2020-03-03 13:16:03,911 - Log - INFO - epoch 56 start 
+2020-03-03 13:30:37,523 - Log - INFO - epoch: 56 {'train_loss': 7.750901029724517, 'train_recall': 0.9886042650614343} {'valid_loss': 0.8129375892569708, 'valid_recall': 0.9726765079969062}
+2020-03-03 13:30:37,525 - Log - INFO - save checkpoint: best_recall:0.9726765079969062
+2020-03-03 13:30:38,681 - Log - INFO - epoch 57 start 
+2020-03-03 13:45:09,240 - Log - INFO - epoch: 57 {'train_loss': 7.718154851054941, 'train_recall': 0.9888211102757801} {'valid_loss': 0.8359871547169402, 'valid_recall': 0.9716401948168398}
+2020-03-03 13:45:09,240 - Log - INFO - epoch 58 start 
+2020-03-03 13:59:38,686 - Log - INFO - epoch: 58 {'train_loss': 7.681818438961298, 'train_recall': 0.9891785018743473} {'valid_loss': 0.8242507769709904, 'valid_recall': 0.9728459934529218}
+2020-03-03 13:59:38,687 - Log - INFO - save checkpoint: best_recall:0.9728459934529218
+2020-03-03 13:59:39,809 - Log - INFO - epoch 59 start 
+2020-03-03 14:16:56,642 - Log - INFO - epoch: 59 {'train_loss': 7.617183482060034, 'train_recall': 0.9889999840387766} {'valid_loss': 0.8134596595106124, 'valid_recall': 0.9728297939863909}
+2020-03-03 14:16:56,643 - Log - INFO - epoch 60 start 
+2020-03-03 14:31:29,326 - Log - INFO - epoch: 60 {'train_loss': 7.657817704074919, 'train_recall': 0.98895628581747} {'valid_loss': 0.8723324859873718, 'valid_recall': 0.972469623616268}
+2020-03-03 14:31:29,327 - Log - INFO - epoch 61 start 
+2020-03-03 14:46:03,980 - Log - INFO - epoch: 61 {'train_loss': 7.683168262674253, 'train_recall': 0.9892772963060865} {'valid_loss': 0.8763287401124894, 'valid_recall': 0.9709543056502342}
+2020-03-03 14:46:03,981 - Log - INFO - epoch 62 start 
+2020-03-03 15:00:38,960 - Log - INFO - epoch: 62 {'train_loss': 7.572978222316145, 'train_recall': 0.9893773309418407} {'valid_loss': 0.8085193361161621, 'valid_recall': 0.9722080007103513}
+2020-03-03 15:00:38,961 - Log - INFO - epoch 63 start 
+2020-03-03 15:15:14,654 - Log - INFO - epoch: 63 {'train_loss': 7.632509338810791, 'train_recall': 0.9895929025783393} {'valid_loss': 0.8152445028432211, 'valid_recall': 0.9724936471274966}
+2020-03-03 15:15:14,655 - Log - INFO - epoch 64 start 
+2020-03-03 15:29:48,216 - Log - INFO - epoch: 64 {'train_loss': 7.702235944995643, 'train_recall': 0.9892326104650264} {'valid_loss': 0.8656935452166233, 'valid_recall': 0.9710186833272713}
+2020-03-03 15:29:48,217 - Log - INFO - epoch 65 start 
+2020-03-03 15:44:25,982 - Log - INFO - epoch: 65 {'train_loss': 7.487624907389889, 'train_recall': 0.9896594041160149} {'valid_loss': 0.7979389375852789, 'valid_recall': 0.9728096151340939}
+2020-03-03 15:44:25,983 - Log - INFO - epoch 66 start 
+2020-03-03 15:59:00,541 - Log - INFO - epoch: 66 {'train_loss': 7.63527156011773, 'train_recall': 0.989744688726346} {'valid_loss': 0.7718344300593825, 'valid_recall': 0.9731109352997891}
+2020-03-03 15:59:00,542 - Log - INFO - save checkpoint: best_recall:0.9731109352997891
+2020-03-03 15:59:01,662 - Log - INFO - epoch 67 start 
+2020-03-03 16:13:39,286 - Log - INFO - epoch: 67 {'train_loss': 7.607385277191763, 'train_recall': 0.9899098403560853} {'valid_loss': 0.7921206833450658, 'valid_recall': 0.973397950550993}
+2020-03-03 16:13:39,287 - Log - INFO - save checkpoint: best_recall:0.973397950550993
+2020-03-03 16:13:40,492 - Log - INFO - epoch 68 start 
+2020-03-03 16:28:17,877 - Log - INFO - epoch: 68 {'train_loss': 7.482573072319944, 'train_recall': 0.9901771375629834} {'valid_loss': 0.8742815765454345, 'valid_recall': 0.9704709010064018}
+2020-03-03 16:28:17,878 - Log - INFO - epoch 69 start 
+2020-03-03 16:42:57,745 - Log - INFO - epoch: 69 {'train_loss': 7.580634330399334, 'train_recall': 0.9904253944284762} {'valid_loss': 0.8391403870821699, 'valid_recall': 0.9722774337342812}
+2020-03-03 16:42:57,746 - Log - INFO - epoch 70 start 
+2020-03-03 16:57:35,198 - Log - INFO - epoch: 70 {'train_loss': 7.488682269815642, 'train_recall': 0.9901920367061154} {'valid_loss': 0.8514704168462758, 'valid_recall': 0.9720239912246721}
+2020-03-03 16:57:35,199 - Log - INFO - epoch 71 start 
+2020-03-03 17:12:12,750 - Log - INFO - epoch: 71 {'train_loss': 7.461789435915106, 'train_recall': 0.9904443935761772} {'valid_loss': 0.8391344781066321, 'valid_recall': 0.9721563245794874}
+2020-03-03 17:12:12,750 - Log - INFO - epoch 72 start 
+2020-03-03 17:26:49,292 - Log - INFO - epoch: 72 {'train_loss': 7.453854972457685, 'train_recall': 0.9900526699701939} {'valid_loss': 0.8121539195591678, 'valid_recall': 0.9729613068901176}
+2020-03-03 17:26:49,293 - Log - INFO - epoch 73 start 
+2020-03-03 17:41:25,846 - Log - INFO - epoch: 73 {'train_loss': 7.402271733395621, 'train_recall': 0.9914468719529163} {'valid_loss': 0.7978644744280998, 'valid_recall': 0.9724425635540842}
+2020-03-03 17:41:25,846 - Log - INFO - epoch 74 start 
+2020-03-03 17:56:03,560 - Log - INFO - epoch: 74 {'train_loss': 7.2903015074609065, 'train_recall': 0.9924070706747407} {'valid_loss': 0.7780630419521658, 'valid_recall': 0.9729631750189315}
+2020-03-03 17:56:03,561 - Log - INFO - epoch 75 start 
+2020-03-03 18:10:36,270 - Log - INFO - epoch: 75 {'train_loss': 7.324923646836963, 'train_recall': 0.9922737120418994} {'valid_loss': 0.7612211915329218, 'valid_recall': 0.9750556667750291}
+2020-03-03 18:10:36,271 - Log - INFO - save checkpoint: best_recall:0.9750556667750291
+2020-03-03 18:10:37,427 - Log - INFO - epoch 76 start 
+2020-03-03 18:25:13,033 - Log - INFO - epoch: 76 {'train_loss': 7.260648584719532, 'train_recall': 0.9931088040952074} {'valid_loss': 0.7735482689725817, 'valid_recall': 0.9749255545197621}
+2020-03-03 18:25:13,033 - Log - INFO - epoch 77 start 
+2020-03-03 18:39:45,404 - Log - INFO - epoch: 77 {'train_loss': 7.2372282432415975, 'train_recall': 0.9927128363646505} {'valid_loss': 0.774244430133106, 'valid_recall': 0.9748574335731615}
+2020-03-03 18:39:45,404 - Log - INFO - epoch 78 start 
+2020-03-03 18:54:04,529 - Log - INFO - epoch: 78 {'train_loss': 7.208733994222967, 'train_recall': 0.9926426717370839} {'valid_loss': 0.7993378498929606, 'valid_recall': 0.9741357073009861}
+2020-03-03 18:54:04,530 - Log - INFO - epoch 79 start 
+2020-03-03 19:08:23,355 - Log - INFO - epoch: 79 {'train_loss': 7.208053438407965, 'train_recall': 0.9924695880835253} {'valid_loss': 0.8046798796784489, 'valid_recall': 0.9740311264904191}
+2020-03-03 19:08:23,356 - Log - INFO - epoch 80 start 
+2020-03-03 19:22:39,158 - Log - INFO - epoch: 80 {'train_loss': 7.188708884748161, 'train_recall': 0.9931936878540331} {'valid_loss': 0.7475249344378466, 'valid_recall': 0.9755067886820116}
+2020-03-03 19:22:39,158 - Log - INFO - save checkpoint: best_recall:0.9755067886820116
+2020-03-03 19:22:40,294 - Log - INFO - epoch 81 start 
+2020-03-03 19:36:57,061 - Log - INFO - epoch: 81 {'train_loss': 7.241377541589154, 'train_recall': 0.9928271070287242} {'valid_loss': 0.7633161923998617, 'valid_recall': 0.9750807153692205}
+2020-03-03 19:36:57,062 - Log - INFO - epoch 82 start 
+2020-03-03 19:51:08,200 - Log - INFO - epoch: 82 {'train_loss': 7.141816212406975, 'train_recall': 0.9930604810408379} {'valid_loss': 0.7883421391394037, 'valid_recall': 0.9743141965681947}
+2020-03-03 19:51:08,200 - Log - INFO - epoch 83 start 
+2020-03-03 20:05:23,916 - Log - INFO - epoch: 83 {'train_loss': 7.170921880515958, 'train_recall': 0.9929450553041281} {'valid_loss': 0.7732193679630365, 'valid_recall': 0.9735742513847883}
+2020-03-03 20:05:23,917 - Log - INFO - epoch 84 start 
+2020-03-03 20:19:45,190 - Log - INFO - epoch: 84 {'train_loss': 7.0586562125701775, 'train_recall': 0.992943585143271} {'valid_loss': 0.7855906361687311, 'valid_recall': 0.973498216086633}
+2020-03-03 20:19:45,191 - Log - INFO - epoch 85 start 
+2020-03-03 20:34:08,141 - Log - INFO - epoch: 85 {'train_loss': 7.087837467611738, 'train_recall': 0.9928917611469461} {'valid_loss': 0.7784233171556584, 'valid_recall': 0.9739509632365867}
+2020-03-03 20:34:08,141 - Log - INFO - epoch 86 start 
+2020-03-03 20:48:31,490 - Log - INFO - epoch: 86 {'train_loss': 7.166474136699708, 'train_recall': 0.993281871509786} {'valid_loss': 0.8232167758667474, 'valid_recall': 0.9723902521412018}
+2020-03-03 20:48:31,490 - Log - INFO - epoch 87 start 
+2020-03-03 21:02:56,441 - Log - INFO - epoch: 87 {'train_loss': 7.050436474341708, 'train_recall': 0.9936492002603844} {'valid_loss': 0.7435621638459029, 'valid_recall': 0.9755156448270899}
+2020-03-03 21:02:56,442 - Log - INFO - save checkpoint: best_recall:0.9755156448270899
+2020-03-03 21:02:57,625 - Log - INFO - epoch 88 start 

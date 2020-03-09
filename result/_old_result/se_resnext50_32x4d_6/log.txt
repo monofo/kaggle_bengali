@@ -1,0 +1,5 @@
+2020-03-01 01:55:37,714 - Log - INFO - epoch 1 start 
+2020-03-01 02:06:02,901 - Log - INFO - epoch 1 start 
+2020-03-01 02:13:25,471 - Log - INFO - epoch 1 start 
+2020-03-01 02:26:27,248 - Log - INFO - epoch 1 start 
+2020-03-01 02:37:33,670 - Log - INFO - epoch 1 start 

@@ -63,9 +63,14 @@ def cutmix(data, targets1, targets2, targets3, alpha):
     shuffled_targets1 = targets1[indices]
     shuffled_targets2 = targets2[indices]
     shuffled_targets3 = targets3[indices]
-
-    lam = np.random.beta(alpha, alpha)
-    bbx1, bby1, bbx2, bby2 = rand_bbox(data.size(), lam)
+    
+    # constant illumination
+    mean = 0
+    while mean<0.06:
+        lam = np.random.beta(alpha, alpha)
+        bbx1, bby1, bbx2, bby2 = rand_bbox(data.size(), lam)
+        mean = data[:, :, bbx1:bbx2, bby1:bby2].mean()
+        
     data[:, :, bbx1:bbx2, bby1:bby2] = data[indices, :, bbx1:bbx2, bby1:bby2]
     # adjust lambda to exactly match pixel ratio
     lam = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (data.size()[-1] * data.size()[-2]))

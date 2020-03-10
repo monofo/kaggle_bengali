@@ -1,0 +1,2 @@
+2020-03-10 15:01:14,753 - Log - INFO - epoch 1 start 
+2020-03-10 15:17:44,033 - Log - INFO - epoch 1 start 

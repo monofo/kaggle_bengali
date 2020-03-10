@@ -59,12 +59,14 @@ class KaggleDataset(Dataset):
         # image = np.array(Image.fromarray(image).convert("RGB"))
         image = np.stack([image, image, image]).transpose(1,2,0)
         if self.transforms is not None:
-            image = self.transforms(image)
+            image1 = self.transforms(image)
 
-        image = (image).astype(np.float32) / 255.
-
+        image1 = (image1).astype(np.float32) / 255.
+        image2 = Transform(size=224)(image)
+        image2 = (image2).astype(np.float32) / 255.
         return {
-            'images': torch.tensor(image, dtype=torch.float),
+            'images1': torch.tensor(image1, dtype=torch.float),
+            'images2': torch.tensor(image2, dtype=torch.float),
             'grapheme_roots': torch.tensor(grapheme_root, dtype=torch.long),
             'vowel_diacritics': torch.tensor(vowel_diacritic, dtype=torch.long),
             'consonant_diacritics': torch.tensor(consonant_diacritic, dtype=torch.long)

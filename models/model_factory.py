@@ -82,7 +82,6 @@ class ResNet34(nn.Module):
         bs, _, _, _ = x.shape
         x = self.model.features(x)
         x = F.adaptive_avg_pool2d(x, 1).reshape(bs, -1)
-        x = F.dropout(x, 0.4, self.training)
         l0 = self.l0(x)
         l1 = self.l1(x)
         l2 = self.l2(x)

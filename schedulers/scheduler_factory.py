@@ -97,7 +97,7 @@ class HalfCosineAnnealingLR(_LRScheduler):
 def get_scheduler(optimizer, config):
     if config.scheduler.name == 'plateau':
         # scheduler = PlateauLRScheduler(optimizer, factor=0.7, patience=3, lr_min=1e-10)
-        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.7, patience=6, min_lr=1e-10, verbose=True)
+        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.5, patience=6, min_lr=1e-10, verbose=True)
     elif config.scheduler.name == 'onecycle':
         scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, 1e-2, total_steps=None, epochs=config.train.num_epochs, steps_per_epoch=5021, pct_start=0.0, anneal_strategy='cos', cycle_momentum=True, base_momentum=0.85, max_momentum=0.95, div_factor=100.0)
     elif config.scheduler.name == 'cosine':

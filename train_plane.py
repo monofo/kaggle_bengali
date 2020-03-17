@@ -26,11 +26,20 @@ from utils.config import load_config, save_config
 from utils.metrics import macro_recall_multi
 from utils.utils import (EarlyStopping, cutmix, cutmix_criterion, get_logger,
                          mixup, mixup_criterion, ohem_loss, rand_bbox)
+from collections import OrderedDict
 
 os.environ["CUDA_VISIBLE_DEVICES"]='0'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 SCALE = 4
-
+def fix_model_state_dict(state_dict):
+    new_state_dict = OrderedDict()
+    for k, v in state_dict.items():
+        name = k
+        if name.startswith('module.'):
+            name = name[7:]  # remove 'module.' of dataparallel
+        new_state_dict[name] = v
+    return new_state_dict
+    
 def do_train(model, data_loader, criterion, optimizer, device, config, epoch, grad_acc=1):
         model.train()
         train_loss = 0.0
@@ -40,24 +49,19 @@ def do_train(model, data_loader, criterion, optimizer, device, config, epoch, gr
 
         for idx, (inputs) in tqdm(enumerate(data_loader), total=len(data_loader)):
             choice = np.random.rand(1)
-            if choice >= 0.5:
-                x = inputs["images1"].to(device, dtype=torch.float)
-            else:
-                x = inputs["images2"].to(device, dtype=torch.float)
+            x = inputs["images"].to(device, dtype=torch.float)
             grapheme_root = inputs["grapheme_roots"].to(device, dtype=torch.long)
             vowel_diacritic = inputs["vowel_diacritics"].to(device, dtype=torch.long)
             consonant_diacritic = inputs["consonant_diacritics"].to(device, dtype=torch.long)
             
             if choice <= config.train.cutmix:
-            # if (epoch + 1) % 5 != 0:
                 data, targets = cutmix(x, grapheme_root, vowel_diacritic, consonant_diacritic, 1.)
                 logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
                 loss_gr, loss_vd, loss_cd = cutmix_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
-
-            # elif choice <= config.train.cutmix + config.train.mixup:
-            #     data, targets = mixup(x, grapheme_root, vowel_diacritic, consonant_diacritic, 0.4)
-            #     logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
-            #     loss_gr, loss_vd, loss_cd = mixup_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
+            elif choice <= config.train.cutmix + config.train.mixup:
+                data, targets = mixup(x, grapheme_root, vowel_diacritic, consonant_diacritic, 0.4)
+                logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
+                loss_gr, loss_vd, loss_cd = mixup_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
             else:
                 logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
                 loss_gr = criterion(logit_grapheme_root, grapheme_root)
@@ -77,54 +81,6 @@ def do_train(model, data_loader, criterion, optimizer, device, config, epoch, gr
         train_recall /= len(data_loader)
 
         return {'train_loss': train_loss, 'train_recall': train_recall}
-
-def do_train2(model, data_loader, criterion, optimizer, device, config, epoch, grad_acc=1):
-        model.train()
-        train_loss = 0.0
-        train_recall = 0.0
-        optimizer.zero_grad()
-        
-
-        for idx, (inputs) in tqdm(enumerate(data_loader), total=len(data_loader)):
-            choice = np.random.rand(1)
-            x1 = inputs["images1"].cuda()
-            x2 = inputs["images2"].cuda()
-            grapheme_root = inputs["grapheme_roots"].cuda()
-            vowel_diacritic = inputs["vowel_diacritics"].cuda()
-            consonant_diacritic = inputs["consonant_diacritics"].cuda()
-            
-
-            data, targets = cutmix(x1, grapheme_root, vowel_diacritic, consonant_diacritic, 1.)
-            logit_grapheme_root1, logit_vowel_diacritic1, logit_consonant_diacritic1 = model(data)
-            loss_gr1, loss_vd1, loss_cd1 = cutmix_criterion(logit_grapheme_root1, logit_vowel_diacritic1, logit_consonant_diacritic1, targets, criterion)
-
-            data, targets = cutmix(x2, grapheme_root, vowel_diacritic, consonant_diacritic, 1.)
-            logit_grapheme_root2, logit_vowel_diacritic2, logit_consonant_diacritic2 = model(data)
-            loss_gr2, loss_vd2, loss_cd2 = cutmix_criterion(logit_grapheme_root2, logit_vowel_diacritic2, logit_consonant_diacritic2, targets, criterion)
-
-
-            logit_grapheme_root = (logit_grapheme_root1 + logit_grapheme_root2) / 2.
-            logit_vowel_diacritic = (logit_vowel_diacritic1 + logit_vowel_diacritic2) / 2.
-            logit_consonant_diacritic = (logit_consonant_diacritic1 + logit_consonant_diacritic2) / 2.
-
-            loss_gr = (loss_gr1 + loss_gr2) / 2.
-            loss_cd = (loss_cd1 + loss_cd2) / 2.
-            loss_vd = (loss_vd1 + loss_vd2) / 2.
-
-            train_recall += macro_recall_multi(logit_grapheme_root, grapheme_root, logit_vowel_diacritic, vowel_diacritic, logit_consonant_diacritic, consonant_diacritic)
-
-            ((SCALE * loss_gr + loss_cd + loss_vd) / grad_acc).backward()
-
-            if (idx % grad_acc) == 0:
-                optimizer.step()
-                optimizer.zero_grad()
-            train_loss += SCALE * loss_gr.item() + loss_vd.item() + loss_cd.item()
-
-        train_loss /= len(data_loader)
-        train_recall /= len(data_loader)
-
-        return {'train_loss': train_loss, 'train_recall': train_recall}
-
 
 def do_eval(model, data_loader, criterion, device):
     model.eval()
@@ -157,7 +113,7 @@ def do_eval(model, data_loader, criterion, device):
 
 def run(config_file):
     config = load_config(config_file)  
-    config.work_dir = '/home/kazuki/workspace/kaggle_bengali/result/'+config.work_dir
+    config.work_dir = '/home/koga/workspace/kaggle_bengali/result/'+config.work_dir
     os.makedirs(config.work_dir, exist_ok=True)
     os.makedirs(config.work_dir + "/checkpoints", exist_ok=True)
     print('working directory:', config.work_dir)
@@ -185,6 +141,7 @@ def run(config_file):
     dataloaders = {
         phase: make_loader(
             phase=phase,
+            df_path=config.train.dfpath,
             batch_size=config.train.batch_size,
             num_workers=config.num_workers,
             idx_fold=config.data.params.idx,
@@ -217,9 +174,10 @@ def run(config_file):
     best_valid_recall = 0.0
     if config.train.resume:
         print('resume checkpoints')
-        checkpoint = torch.load("/home/kazuki/workspace/kaggle_bengali/result/" + config.train.path)
-        model.load_state_dict(checkpoint['checkpoint'])
-        best_valid_recall = checkpoint['best_valid_recall']
+        checkpoint = torch.load("/home/koga/workspace/kaggle_bengali/result/" + config.train.path)
+        model.load_state_dict(fix_model_state_dict(checkpoint['checkpoint']))
+        # model.load_state_dict(checkpoint['checkpoint'])
+        # best_valid_recall = checkpoint['best_valid_recall']
 
     # if config.train.earlyStopping:
     #     early_stopping = EarlyStopping(patience=patience, verbose=True)
@@ -227,14 +185,10 @@ def run(config_file):
     valid_recall = 0.0
 
     for epoch in range(1, config.train.num_epochs+1):
-        print(f'epoch {epoch} start ')
+        print(f'epoch {epoch} start')
         logger.info(f'epoch {epoch} start ')
 
-        # train code
-        if config.train.mode == 1:
-            metric_train = do_train(model, dataloaders["train"], criterion, optimizer, device, config, epoch, accumlate_step)
-        else:
-            metric_train = do_train2(model, dataloaders["train"], criterion, optimizer, device, config, epoch, accumlate_step)
+        metric_train = do_train(model, dataloaders["train"], criterion, optimizer, device, config, epoch, accumlate_step)
         torch.cuda.empty_cache()
         metrics_eval = do_eval(model, dataloaders["valid"], criterion, device)
         torch.cuda.empty_cache()

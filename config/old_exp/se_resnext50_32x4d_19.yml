@@ -1,22 +1,22 @@
-work_dir: 'se_resnext50_32x4d_2020_3_04/'  
+work_dir: 'se_resnext50_32x4d_19/'  
 data:   
-  image_size: 128
+  image_size: 224
   params:
-    idx: 1
+    idx: 0
     fold_csv: 'train_with_fold_seed12.csv'
   
 
 model:   
   version:  'se_resnext50_32x4d'   
-  pretrained: 'imagenet'  
+  pretrained: Yes 
   
-# SVHNPolicy
+# SVHNPolicy dropoutなし、pa=7, fac=.8
 transforms:     
   affine: No     
   crop: No
   threshold: 0.     
   sigma: 0.     
-  autoaugment_ratio: 1.    
+  autoaugment_ratio: 1.
   blur_ratio: 0.     
   noise_ratio: 0.     
   cutout_ratio: 0.     
@@ -35,7 +35,9 @@ train:
   grid_mask: 0.
   augmix: 0.   
   accumulation_size: 0 
-  resume: No    
+  resume: Yes    
+  path: 'se_resnext50_32x4d_15/checkpoints/137.pth'   
+  mode: 1
   
 loss:   
   name: "CrossEntropy"  
@@ -52,5 +54,5 @@ optimizer:
 scheduler:   
   name: 'plateau'  
   
-num_workers: 2 
+num_workers: 8
 device: 'cuda' 

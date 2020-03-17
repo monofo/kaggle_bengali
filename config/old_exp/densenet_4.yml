@@ -1,45 +1,48 @@
-work_dir: 'densenet_2/'  
+work_dir: 'densenet121_4/'  
 data:   
   image_size: -1
   params:
-    idx: 0
+    idx: 1
     fold_csv: 'train_with_fold_seed12.csv'
   
 
 model:   
   version:  'densenet121'   
-  pretrained: Yes
+  pretrained: Yes 
   
-# ImageNetPolicy
+# SVHNPolicy dropoutなし、pa=7, fac=.8
 transforms:     
   affine: No     
   crop: No
   threshold: 0.     
   sigma: 0.     
-  autoaugment_ratio: 1. 
-  augmix_ratio: 0.   
-  blur_ratio: 0.  
+  autoaugment_ratio: 0.
+  blur_ratio: 0.     
   noise_ratio: 0.     
-  cutout_ratio: 0.
-  grid_distortion_ratio: 0.  
-  random_brightness_ratio: 0.
+  cutout_ratio: 0.8
+  grid_distortion_ratio: 0.     
+  random_brightness_ratio: 0.     
   piece_affine_ratio: 0.     
   ssr_ratio: 0.
-  random_size_crop_ratio: .
   grid_mask_ratio: 0.     
-  normalize: No
+  augmix_ratio: 0.     
   
 train:   
-  batch_size: 64
-  num_epochs: 150  
-  cutmix: 1.
-  mixup: 0. 
+  dfpath: '/home/koga/workspace/kaggle_bengali/data/input/'
+  batch_size: 128
+  num_epochs: 150   
+  mixup: 0.
+  cutmix: 0.   
+  grid_mask: 0.
+  augmix: 0.   
   accumulation_size: 0 
-  resume: No    
-
+  mode: 1
+  resume: No
+  
   
 loss:   
-  name: "CrossEntropy"  
+  name: "OHEM"  
+  rate: 0.7 
   
 optimizer:
     name: 'Adam'
@@ -53,5 +56,5 @@ optimizer:
 scheduler:   
   name: 'plateau'  
   
-num_workers: 16 
+num_workers: 8
 device: 'cuda' 

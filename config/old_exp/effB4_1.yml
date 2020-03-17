@@ -1,49 +1,53 @@
-work_dir: 'se_resnext50_32x4d_2020_3_04/'  
+work_dir: 'effcientNet_1/'  
 data:   
-  image_size: 128
+  image_size: 224
   params:
-    idx: 1
+    idx: 0
     fold_csv: 'train_with_fold_seed12.csv'
   
 
 model:   
-  version:  'se_resnext50_32x4d'   
-  pretrained: 'imagenet'  
+  version:  'effcientNet'   
+  pretrained: Yes 
   
-# SVHNPolicy
+# SVHNPolicy dropoutなし、pa=7, fac=.8
 transforms:     
   affine: No     
   crop: No
   threshold: 0.     
   sigma: 0.     
-  autoaugment_ratio: 1.    
+  autoaugment_ratio: 0.
   blur_ratio: 0.     
   noise_ratio: 0.     
-  cutout_ratio: 0.     
+  cutout_ratio: 0.8 
   grid_distortion_ratio: 0.     
   random_brightness_ratio: 0.     
   piece_affine_ratio: 0.     
-  ssr_ratio: 0.     
+  ssr_ratio: 0.    
   grid_mask_ratio: 0.     
-  augmix_ratio: 0.      
+  augmix_ratio: 1.      
   
 train:   
+  dfpath: '/home/koga/workspace/kaggle_bengali/data/input/'
   batch_size: 128
   num_epochs: 150   
   mixup: 0.
-  cutmix: 1.   
+  cutmix: 0.   
   grid_mask: 0.
   augmix: 0.   
   accumulation_size: 0 
-  resume: No    
+  mode: 1
+  resume: No
+  
   
 loss:   
-  name: "CrossEntropy"  
+  name: "OHEM"  
+  rate: 0.8 
   
 optimizer:
     name: 'Adam'
     params:
-        lr: 1.0e-4
+        lr: 5.0e-4
         opt_eps: 1.0e-8
         weight_decay: 1.0e-4
     lookahead:
@@ -52,5 +56,5 @@ optimizer:
 scheduler:   
   name: 'plateau'  
   
-num_workers: 2 
+num_workers: 8
 device: 'cuda' 

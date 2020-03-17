@@ -66,7 +66,7 @@ def cutmix(data, targets1, targets2, targets3, alpha):
     
     # constant illumination
     mean = 0
-    while mean<0.06:
+    while mean<0.06 or np.isnan(mean.cpu().numpy()):
         lam = np.random.beta(alpha, alpha)
         bbx1, bby1, bbx2, bby2 = rand_bbox(data.size(), lam)
         mean = data[:, :, bbx1:bbx2, bby1:bby2].mean()

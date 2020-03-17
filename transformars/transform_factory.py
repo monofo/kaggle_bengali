@@ -151,7 +151,7 @@ class Transform:
                 x = apply_aug(A.MultiplicativeNoise(p=1.0), x)
 
         if _evaluate_ratio(self.cutout_ratio):
-            x = apply_aug(A.CoarseDropout(max_holes=8, max_height=18, max_width=18, p=1.0), x)
+            x = apply_aug(A.CoarseDropout(max_holes=8, max_height=23, max_width=23, p=1.0), x)
 
         if _evaluate_ratio(self.grid_distortion_ratio):
             x = apply_aug(A.GridDistortion(p=1.0), x)

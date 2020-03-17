@@ -12,6 +12,7 @@ from torch.utils.data import Dataset,DataLoader
 from torchvision import transforms,models
 from tqdm import tqdm_notebook as tqdm
 from torch.optim import lr_scheduler
+from torch.nn.parameter import Parameter
 
 class double_conv(nn.Module):
     '''(conv => BN => ReLU) * 2'''
@@ -30,9 +31,10 @@ class double_conv(nn.Module):
         x = self.conv(x)
         return x
     
-from torch.nn.parameter import Parameter
+
 def gem(x, p=3, eps=1e-6):
     return F.avg_pool2d(x.clamp(min=eps).pow(p), (x.size(-2), x.size(-1))).pow(1./p)
+
 
 class GeM(nn.Module):
     def __init__(self, p=3, eps=1e-6):
@@ -43,6 +45,8 @@ class GeM(nn.Module):
         return gem(x, p=self.p, eps=self.eps)       
     def __repr__(self):
         return self.__class__.__name__ + '(' + 'p=' + '{:.4f}'.format(self.p.data.tolist()[0]) + ', ' + 'eps=' + str(self.eps) + ')'
+
+
 class se_resnext101_32x4d(nn.Module):
     def __init__(self, pretrained):
         super(se_resnext101_32x4d, self).__init__()
@@ -87,6 +91,7 @@ class ResNet34(nn.Module):
         l2 = self.l2(x)
         return [l0, l1, l2]
 
+
 class ResNet34_bn(nn.Module):
     def __init__(self, pretrained):
         super(ResNet34_bn, self).__init__()
@@ -124,6 +129,7 @@ class ResNet34_bn(nn.Module):
         
         return [x1, x2o, x3]
 
+
 class ResNet18(nn.Module):
     def __init__(self, pretrained):
         super(ResNet18, self).__init__()
@@ -144,6 +150,7 @@ class ResNet18(nn.Module):
         l1 = self.l1(x)
         l2 = self.l2(x)
         return [l0, l1, l2]
+
 
 class se_resnext50_32x4d(nn.Module):
     def __init__(self, pretrained):
@@ -204,6 +211,8 @@ class se_resnext50_32x4d_bn(nn.Module):
         x3 = self.fc3(x).squeeze(2).squeeze(2)
         
         return [x2o, x1, x3]
+
+
 class densenet121(nn.Module):
     def __init__(self, pretrained):
         super(densenet121, self).__init__()
@@ -220,28 +229,44 @@ class densenet121(nn.Module):
         bs, _, _, _ = x.shape
         x = self.model.features(x)
         x = F.adaptive_avg_pool2d(x, 1).reshape(bs, -1)
-        x = F.dropout(x, 0.4, self.training)
+        # x = F.dropout(x, 0.4, self.training)
         l0 = self.l0(x)
         l1 = self.l1(x)
         l2 = self.l2(x)
         return [l0, l1, l2] 
 
 
-
-
-
 class effcientNet(nn.Module):
     def __init__(self, pretrained):
         super(effcientNet, self).__init__()
         if pretrained is True:
-            self.model = EfficientNet.from_pretrained('efficientnet-b2') 
+            self.model = EfficientNet.from_pretrained('efficientnet-b4') 
         else:
-            self.model = EfficientNet.from_name('efficientnet-b2') 
+            self.model = EfficientNet.from_name('efficientnet-b4') 
         
 
     def forward(self, x):
         l0, l1, l2 = self.model(x)
         return [l0, l1, l2] 
+
+
+class ResNet34_(nn.Module):
+    def __init__(self, pretrained, out_dim):
+        super(ResNet34, self).__init__()
+        if pretrained is True:
+            self.model = pretrainedmodels.__dict__["resnet34"](pretrained="imagenet")
+        else:
+            self.model = pretrainedmodels.__dict__["resnet34"](pretrained=None)
+        
+        self.l0 = nn.Linear(512, out_dim)
+
+    def forward(self, x):
+        bs, _, _, _ = x.shape
+        x = self.model.features(x)
+        x = F.adaptive_avg_pool2d(x, 1).reshape(bs, -1)
+        l0 = self.l0(x)
+        return l0
+
 
 
 MODEL_LIST = {

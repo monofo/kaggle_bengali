@@ -1,22 +1,23 @@
-work_dir: 'se_resnext50_32x4d_2020_3_04/'  
+work_dir: 'se_resnext50_32x4d_21/'  
 data:   
-  image_size: 128
+  image_size: 224
   params:
-    idx: 1
+    idx: -1
     fold_csv: 'train_with_fold_seed12.csv'
   
 
 model:   
   version:  'se_resnext50_32x4d'   
-  pretrained: 'imagenet'  
+  pretrained: Yes 
   
-# SVHNPolicy
+
 transforms:     
   affine: No     
   crop: No
   threshold: 0.     
   sigma: 0.     
-  autoaugment_ratio: 1.    
+  autoaugment_ratio: 1.
+  augmix_ratio: 0.  
   blur_ratio: 0.     
   noise_ratio: 0.     
   cutout_ratio: 0.     
@@ -25,9 +26,10 @@ transforms:
   piece_affine_ratio: 0.     
   ssr_ratio: 0.     
   grid_mask_ratio: 0.     
-  augmix_ratio: 0.      
+      
   
 train:   
+  dfpath: '/home/koga/workspace/kaggle_bengali/data/input/'
   batch_size: 128
   num_epochs: 150   
   mixup: 0.
@@ -35,11 +37,15 @@ train:
   grid_mask: 0.
   augmix: 0.   
   accumulation_size: 0 
-  resume: No    
+  resume: No
+  mode: 1
+  
   
 loss:   
-  name: "CrossEntropy"  
+  name: "OHEM"  
+  rate: 0.8
   
+
 optimizer:
     name: 'Adam'
     params:
@@ -49,8 +55,9 @@ optimizer:
     lookahead:
         apply: No
 
+
 scheduler:   
-  name: 'plateau'  
+  name: 'multi_step'  
   
-num_workers: 2 
+num_workers: 8
 device: 'cuda' 

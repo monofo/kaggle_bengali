@@ -50,6 +50,7 @@ class KaggleDataset(Dataset):
         grapheme_root = self.df_label.grapheme_root.values[index]
         vowel_diacritic = self.df_label.vowel_diacritic.values[index]
         consonant_diacritic = self.df_label.consonant_diacritic.values[index]
+        grapheme_id = self.df_label.grapheme_id.values[index]
 
         image = self.images[index]
         image = 255 - image
@@ -64,13 +65,14 @@ class KaggleDataset(Dataset):
             'images': torch.tensor(image, dtype=torch.float),
             'grapheme_roots': torch.tensor(grapheme_root, dtype=torch.long),
             'vowel_diacritics': torch.tensor(vowel_diacritic, dtype=torch.long),
-            'consonant_diacritics': torch.tensor(consonant_diacritic, dtype=torch.long)
+            'consonant_diacritics': torch.tensor(consonant_diacritic, dtype=torch.long),
+            'grapheme_id': torch.tensor(grapheme_id, dtype=torch.long)
         }
 
 
 def make_loader(
         phase,
-        df_path='/home/kazuki/workspace/kaggle_bengali/data/input/',
+        df_path='~/workspace/kaggle_bengali/data/input/',
         batch_size=8,
         num_workers=8,
         idx_fold=None,
@@ -83,35 +85,27 @@ def make_loader(
     train_images = prepare_image(
         df_path, df_path, data_type='train', submission=False)
     train = pd.read_csv(df_path + "train.csv")
-    if idx_fold != -1:
-        if fold_csv == "train_v2.csv":
-            df_train = pd.read_csv(df_path+ 'train_v2.csv')
-            if phase == "train":
-                train_idx = np.where((df_train['fold'] != idx_fold) & (df_train['unseen'] == 0))[0]
-                data_train = train_images[train_idx]
-                train_df = df_train.iloc[train_idx]
-                image_dataset = KaggleDataset(data_train, train_df, transforms=transforms)
-            else:
-                valid_idx = np.where((df_train['fold'] == idx_fold) | (df_train['unseen'] != 0))[0]
-                data_valid = train_images[valid_idx]
-                valid_df = df_train.iloc[valid_idx]
-                image_dataset = KaggleDataset(data_valid, valid_df, transforms=transforms)
-        else:
-            train = pd.read_csv(df_path + "train.csv")
-            folds = pd.read_csv(df_path + fold_csv)
 
-            if phase == "train":
-                train_ids = folds[folds["fold"]!=idx_fold].index
-                train_df = train.iloc[train_ids]
-                data_train = train_images[train_ids]
-                image_dataset = KaggleDataset(data_train, train_df, transforms=transforms)
-            else:
-                valid_ids = folds[folds["fold"]==idx_fold].index
-                valid_df = train.iloc[valid_ids]
-                data_valid = train_images[valid_ids]
-                image_dataset = KaggleDataset(data_valid, valid_df, transforms=transforms)
+    train = pd.read_csv(df_path + "train.csv")
+    folds = pd.read_csv(df_path + fold_csv)
+
+    df_class_map = pd.read_csv(os.path.join(df_path, f'class_map.csv'))
+
+    id2grapheme = {i: grapheme for i, grapheme in enumerate(train.grapheme.unique())}
+    grapheme2id = {grapheme: i for i, grapheme in enumerate(train.grapheme.unique())}
+    train['grapheme_id'] = train['grapheme'].map(grapheme2id)
+
+    if phase == "train":
+        train_ids = folds[folds["fold"]!=idx_fold].index
+        train_df = train.iloc[train_ids]
+        data_train = train_images[train_ids]
+        image_dataset = KaggleDataset(data_train, train_df, transforms=transforms)
     else:
-        image_dataset = KaggleDataset(train_images, train, transforms=transforms)
+        valid_ids = folds[folds["fold"]==idx_fold].index
+        valid_df = train.iloc[valid_ids]
+        data_valid = train_images[valid_ids]
+        image_dataset = KaggleDataset(data_valid, valid_df, transforms=transforms)
+
 
     return DataLoader(
         image_dataset,

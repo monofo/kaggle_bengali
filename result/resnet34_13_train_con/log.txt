@@ -1,4 +1,0 @@
-2020-03-07 20:46:05,989 - Log - INFO - epoch 1 start 
-2020-03-07 20:54:52,763 - Log - INFO - epoch: 1 {'train_loss': 31.14040373282353, 'train_recall': 0.288574445988925} {'valid_loss': 9.476012788760434, 'valid_recall': 0.763380528907595}
-2020-03-07 20:54:52,764 - Log - INFO - save checkpoint: best_recall:0.763380528907595
-2020-03-07 20:54:53,656 - Log - INFO - epoch 2 start 

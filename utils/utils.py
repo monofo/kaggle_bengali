@@ -161,3 +161,26 @@ class EarlyStopping:
             print(f'Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ...')
         torch.save(model.state_dict(), 'checkpoint.pt')
         self.val_loss_min = val_loss
+
+def n_by_m_distances(n, m, how='cosine'):
+    """
+    Calculate distances for all combinations of vectors.
+    Example:
+        n = np.array([[0.1, 0.2], [0.7, 0.5], [0.3, 0.4]])
+        m = np.array([[-20, 10], [10, 20], [10, 10], [20, 10]])
+        n_by_m_distances(n, m, how='euclidean')
+        Result:
+            [[22.361798, 22.137073, 13.930183, 22.1822  ],
+             [22.775864, 21.604166, 13.29436 , 21.511392],
+             [22.455512, 21.868928, 13.647344, 21.914607]]
+    """
+    if how == 'cosine':
+        l2_n = np.linalg.norm(n, axis=1)
+        l2_m = np.linalg.norm(m, axis=1)
+        inner = np.dot(n, m.T)
+        norms = np.dot(l2_n.reshape(-1, 1), l2_m.reshape(1, -1))
+        return 1.0 - (inner / norms)
+    elif how == 'euclidean':
+        return np.array([np.linalg.norm(m - a_n, axis=1) for a_n in n])
+    else:
+        raise Exception(f'Unknown how: {how}')

@@ -1,0 +1,56 @@
+work_dir: 'late_resnet34_3model/'  
+data:   
+  image_size: 128
+  params:
+    idx: 0
+    fold_csv: 'train_with_fold_seed12.csv'
+  
+
+model:   
+  version:  'Resnet34_3model'   
+  pretrained: Yes 
+  
+# SVHNPolicy dropoutなし、pa=7, fac=.8
+transforms:     
+  affine: No     
+  crop: No
+  threshold: 0.     
+  sigma: 0.     
+  autoaugment_ratio: 0.
+  blur_ratio: 0.     
+  noise_ratio: 0.   
+  cutout_ratio: 0.3
+  grid_distortion_ratio: 0.     
+  random_brightness_ratio: 0.     
+  piece_affine_ratio: 0.     
+  ssr_ratio: 0.  
+  grid_mask_ratio: 0.   
+  augmix_ratio: 0.      
+  
+train:   
+  dfpath: '~/workspace/kaggle_bengali/data/input/'
+  batch_size: 128
+  num_epochs: 150  
+  mixup: 0.
+  cutmix: 0.
+  accumulation_size: 0 
+  resume: No
+  
+  
+loss:   
+  name: "CrossEntropy"  
+  
+optimizer:
+    name: 'Adam'
+    params:
+        lr: 5.0e-4
+        opt_eps: 1.0e-8
+        weight_decay: 1.0e-4
+    lookahead:
+        apply: No
+
+scheduler:   
+  name: 'plateau'  
+  
+num_workers: 8
+device: 'cuda' 

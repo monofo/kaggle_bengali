@@ -40,11 +40,17 @@ def fix_model_state_dict(state_dict):
         new_state_dict[name] = v
     return new_state_dict
     
+    
 def do_train(model, data_loader, criterion, optimizer, device, config, epoch, grad_acc=1):
-        model.train()
+        model[0].train()
+        model[1].train()
+        model[2].train()
+
         train_loss = 0.0
         train_recall = 0.0
-        optimizer.zero_grad()
+        optimizer[0].zero_grad()
+        optimizer[1].zero_grad()
+        optimizer[2].zero_grad()
         
 
         for idx, (inputs) in tqdm(enumerate(data_loader), total=len(data_loader)):
@@ -56,14 +62,14 @@ def do_train(model, data_loader, criterion, optimizer, device, config, epoch, gr
             
             if choice <= config.train.cutmix:
                 data, targets = cutmix(x, grapheme_root, vowel_diacritic, consonant_diacritic, 1.)
-                logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
+                logit_grapheme_root = model[0](data)
+                logit_vowel_diacritic = model[1](data)
+                logit_consonant_diacritic = model[2](data)
                 loss_gr, loss_vd, loss_cd = cutmix_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
-            elif choice <= config.train.cutmix + config.train.mixup:
-                data, targets = mixup(x, grapheme_root, vowel_diacritic, consonant_diacritic, 0.4)
-                logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
-                loss_gr, loss_vd, loss_cd = mixup_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
             else:
-                logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
+                logit_grapheme_root = model[0](x)
+                logit_vowel_diacritic = model[1](x)
+                logit_consonant_diacritic = model[2](x)
                 loss_gr = criterion(logit_grapheme_root, grapheme_root)
                 loss_vd = criterion(logit_vowel_diacritic, vowel_diacritic )
                 loss_cd = criterion(logit_consonant_diacritic, consonant_diacritic)
@@ -73,8 +79,12 @@ def do_train(model, data_loader, criterion, optimizer, device, config, epoch, gr
             ((SCALE * loss_gr + loss_cd + loss_vd) / grad_acc).backward()
 
             if (idx % grad_acc) == 0:
-                optimizer.step()
-                optimizer.zero_grad()
+                optimizer[0].step()
+                optimizer[0].zero_grad()
+                optimizer[1].step()
+                optimizer[1].zero_grad()
+                optimizer[2].step()
+                optimizer[2].zero_grad()
             train_loss += SCALE * loss_gr.item() + loss_vd.item() + loss_cd.item()
 
         train_loss /= len(data_loader)
@@ -82,8 +92,11 @@ def do_train(model, data_loader, criterion, optimizer, device, config, epoch, gr
 
         return {'train_loss': train_loss, 'train_recall': train_recall}
 
+
 def do_eval(model, data_loader, criterion, device):
-    model.eval()
+    model[0].eval()
+    model[1].eval()
+    model[2].eval()
     total_loss = 0.
     valid_recall = 0.
 
@@ -95,7 +108,9 @@ def do_eval(model, data_loader, criterion, device):
             vowel_diacritic = inputs["vowel_diacritics"].to(device, dtype=torch.long)
             consonant_diacritic = inputs["consonant_diacritics"].to(device, dtype=torch.long)
 
-            logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
+            logit_grapheme_root = model[0](x)
+            logit_vowel_diacritic = model[1](x)
+            logit_consonant_diacritic = model[2](x)
 
             loss_gr = criterion(logit_grapheme_root, grapheme_root)
             loss_vd = criterion(logit_vowel_diacritic, vowel_diacritic )
@@ -152,20 +167,28 @@ def run(config_file):
         )
         for phase in ['train', 'valid']
     }
-    model = MODEL_LIST[config.model.version](pretrained=config.model.pretrained)
-    
+    model_root = MODEL_LIST['Resnet34_3model'](pretrained=config.model.pretrained, out_dim=168)
+    model_vowel = MODEL_LIST['Resnet34_3model'](pretrained=config.model.pretrained, out_dim=11)
+    model_const = MODEL_LIST['Resnet34_3model'](pretrained=config.model.pretrained, out_dim=7)
 
-    if torch.cuda.device_count() > 1:
-        print("Let's use", torch.cuda.device_count(), "GPUs!")
-        model = nn.DataParallel(model)
-        config.optimizer.params.lr *= torch.cuda.device_count()
-        torch.backends.cudnn.benchmark = True
+    model_root = model_root.to(device)
+    model_vowel = model_vowel.to(device)
+    model_const = model_const.to(device)
 
-    model = model.to(device)
+    model_list = [model_root, model_vowel, model_const]
 
     criterion = get_criterion(config)
-    optimizer = get_optimizer(config, model)
-    scheduler = get_scheduler(optimizer, config)
+    optimizer_root = get_optimizer(config, model_root)
+    optimizer_vowel = get_optimizer(config, model_vowel)
+    optimizer_const = get_optimizer(config, model_const)
+
+    optimizer_list = [optimizer_root, optimizer_vowel, optimizer_const]
+
+    scheduler_root = get_scheduler(optimizer_root, config)
+    scheduler_vowel = get_scheduler(optimizer_vowel, config)
+    scheduler_const = get_scheduler(optimizer_const, config)
+
+    scheduler_list = [scheduler_root, scheduler_vowel, scheduler_const]
 
     accumlate_step = 1
     if config.train.accumulation_size > 0:
@@ -176,11 +199,8 @@ def run(config_file):
         print('resume checkpoints')
         checkpoint = torch.load("/home/koga/workspace/kaggle_bengali/result/" + config.train.path)
         model.load_state_dict(fix_model_state_dict(checkpoint['checkpoint']))
-        # model.load_state_dict(checkpoint['checkpoint'])
-        # best_valid_recall = checkpoint['best_valid_recall']
 
-    # if config.train.earlyStopping:
-    #     early_stopping = EarlyStopping(patience=patience, verbose=True)
+
 
     valid_recall = 0.0
 
@@ -188,13 +208,15 @@ def run(config_file):
         print(f'epoch {epoch} start')
         logger.info(f'epoch {epoch} start ')
 
-        metric_train = do_train(model, dataloaders["train"], criterion, optimizer, device, config, epoch, accumlate_step)
+        metric_train = do_train(model_list, dataloaders["train"], criterion, optimizer_list, device, config, epoch, accumlate_step)
         torch.cuda.empty_cache()
-        metrics_eval = do_eval(model, dataloaders["valid"], criterion, device)
+        metrics_eval = do_eval(model_list, dataloaders["valid"], criterion, device)
         torch.cuda.empty_cache()
         valid_recall = metrics_eval["valid_recall"]
 
-        scheduler.step(metrics_eval["valid_recall"])
+        scheduler_list[0].step(metrics_eval["valid_recall"])
+        scheduler_list[1].step(metrics_eval["valid_recall"])
+        scheduler_list[2].step(metrics_eval["valid_recall"])
 
 
         print(f'epoch: {epoch} ', metric_train, metrics_eval)
@@ -203,7 +225,9 @@ def run(config_file):
             print(f"save checkpoint: best_recall:{valid_recall}")
             logger.info(f"save checkpoint: best_recall:{valid_recall}")
             torch.save({
-                'checkpoint': model.state_dict(),
+                'checkpoint_root': model_list[0].state_dict(),
+                'checkpoint_vowel': model_list[1].state_dict(),
+                'checkpoint_const': model_list[2].state_dict(),
                 'epoch': epoch,
                 'best_valid_recall': valid_recall,
                 }, config.work_dir + "/checkpoints/" + f"{epoch}.pth")

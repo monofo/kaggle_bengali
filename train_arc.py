@@ -27,6 +27,7 @@ from utils.metrics import macro_recall_multi
 from utils.utils import (EarlyStopping, cutmix, cutmix_criterion, get_logger,
                          mixup, mixup_criterion, ohem_loss, rand_bbox)
 from collections import OrderedDict
+from sklearn.metrics.pairwise import cosine_similarity
 
 os.environ["CUDA_VISIBLE_DEVICES"]='0'
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -43,71 +44,59 @@ def fix_model_state_dict(state_dict):
 def do_train(model, data_loader, criterion, optimizer, device, config, epoch, grad_acc=1):
         model.train()
         train_loss = 0.0
-        train_recall = 0.0
+        train_acc = 0.0
         optimizer.zero_grad()
         
 
         for idx, (inputs) in tqdm(enumerate(data_loader), total=len(data_loader)):
             choice = np.random.rand(1)
             x = inputs["images"].to(device, dtype=torch.float)
-            grapheme_root = inputs["grapheme_roots"].to(device, dtype=torch.long)
-            vowel_diacritic = inputs["vowel_diacritics"].to(device, dtype=torch.long)
-            consonant_diacritic = inputs["consonant_diacritics"].to(device, dtype=torch.long)
+            grapheme_id = inputs["grapheme_id"].to(device, dtype=torch.long)
             
-            if choice <= config.train.cutmix:
-                data, targets = cutmix(x, grapheme_root, vowel_diacritic, consonant_diacritic, 1.)
-                logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
-                loss_gr, loss_vd, loss_cd = cutmix_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
-            elif choice <= config.train.cutmix + config.train.mixup:
-                data, targets = mixup(x, grapheme_root, vowel_diacritic, consonant_diacritic, 0.4)
-                logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(data)
-                loss_gr, loss_vd, loss_cd = mixup_criterion(logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic, targets, criterion)
-            else:
-                logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
-                loss_gr = criterion(logit_grapheme_root, grapheme_root)
-                loss_vd = criterion(logit_vowel_diacritic, vowel_diacritic )
-                loss_cd = criterion(logit_consonant_diacritic, consonant_diacritic)
+            outputs = model(x)
+            loss_metric = criterion(outputs[1], F.one_hot(grapheme_id, 1295).float())
+            loss_0 = nn.CrossEntropyLoss()(outputs[0], grapheme_id)
+            pred = outputs[1].argmax(1).detach()
+            train_acc += (grapheme_id == pred).type(torch.FloatTensor).mean().cpu().numpy()
+            # train_metric = cosine_similarity(outputs[0], F.one_hot(grapheme_id, 1295).float()))
+            loss = loss_metric * .5 + loss_0 * .5
 
-            train_recall += macro_recall_multi(logit_grapheme_root, grapheme_root, logit_vowel_diacritic, vowel_diacritic, logit_consonant_diacritic, consonant_diacritic)
-
-            ((SCALE * loss_gr + loss_cd + loss_vd) / grad_acc).backward()
+            (loss / grad_acc).backward()
 
             if (idx % grad_acc) == 0:
                 optimizer.step()
                 optimizer.zero_grad()
-            train_loss += SCALE * loss_gr.item() + loss_vd.item() + loss_cd.item()
+            train_loss += loss.item()
 
         train_loss /= len(data_loader)
-        train_recall /= len(data_loader)
+        train_acc /= len(data_loader)
 
-        return {'train_loss': train_loss, 'train_recall': train_recall}
+        return {'train_loss': train_loss, 'train_acc': train_acc}
 
 def do_eval(model, data_loader, criterion, device):
     model.eval()
     total_loss = 0.
     valid_recall = 0.
-
+    val_acc = 0
     with torch.no_grad():
         total_loss = 0.
         for inputs in tqdm(data_loader, total=len(data_loader)):
             x = inputs["images"].to(device, dtype=torch.float)
-            grapheme_root = inputs["grapheme_roots"].to(device, dtype=torch.long)
-            vowel_diacritic = inputs["vowel_diacritics"].to(device, dtype=torch.long)
-            consonant_diacritic = inputs["consonant_diacritics"].to(device, dtype=torch.long)
+            grapheme_id = inputs["grapheme_id"].to(device, dtype=torch.long)
 
-            logit_grapheme_root, logit_vowel_diacritic, logit_consonant_diacritic = model(x)
+            outputs = model(x)
+            loss_metric = criterion(outputs[1], F.one_hot(grapheme_id, 1295).float())
+            loss_0 = nn.CrossEntropyLoss()(outputs[0], grapheme_id)
+            pred = outputs[1].argmax(1).detach()
+            val_acc += (grapheme_id == pred).type(torch.FloatTensor).mean().cpu().numpy()
+            # valid_metric = cosine_similarity(outputs[0], F.one_hot(grapheme_id, 1296).float()))
+            loss = loss_metric * .5 + loss_0 * .5
 
-            loss_gr = criterion(logit_grapheme_root, grapheme_root)
-            loss_vd = criterion(logit_vowel_diacritic, vowel_diacritic )
-            loss_cd = criterion(logit_consonant_diacritic, consonant_diacritic)
-
-            valid_recall += macro_recall_multi(logit_grapheme_root, grapheme_root, logit_vowel_diacritic, vowel_diacritic, logit_consonant_diacritic, consonant_diacritic)
-
-            total_loss += SCALE * loss_gr.item() + loss_vd.item() +  loss_cd.item()
-
+            total_loss += loss
         total_loss /= len(data_loader)
-        valid_recall /= len(data_loader)
-        metrics = {'valid_loss': total_loss, "valid_recall": valid_recall}
+        val_acc /= len(data_loader)
+    
+        metrics = {'valid_loss': total_loss, "valid_metric": val_acc}
     return metrics
 
 
@@ -152,7 +141,7 @@ def run(config_file):
         )
         for phase in ['train', 'valid']
     }
-    model = MODEL_LIST[config.model.version](pretrained=config.model.pretrained)
+    model = MODEL_LIST[config.model.version](back_bone=config.model.back_bone, out_dim = 1295)
     
 
     if torch.cuda.device_count() > 1:
@@ -192,9 +181,9 @@ def run(config_file):
         torch.cuda.empty_cache()
         metrics_eval = do_eval(model, dataloaders["valid"], criterion, device)
         torch.cuda.empty_cache()
-        valid_recall = metrics_eval["valid_recall"]
+        valid_recall = metrics_eval["valid_metric"]
 
-        scheduler.step(metrics_eval["valid_recall"])
+        scheduler.step(metrics_eval["valid_loss"])
 
 
         print(f'epoch: {epoch} ', metric_train, metrics_eval)
